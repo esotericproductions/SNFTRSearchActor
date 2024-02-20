@@ -5,19 +5,18 @@ plugins {
 }
 
 kotlin {
-    jvm {
+    jvm{
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
-                moduleName = "sharedactor"
             }
         }
     }
     androidTarget {
+        publishLibraryVariants("release")
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
-                moduleName = "sharedactor"
             }
         }
     }
@@ -50,7 +49,6 @@ kotlin {
         androidMain {
             dependencies{
                 dependsOn(commonMain)
-                implementation(libs.snftr.snftrDb)
             }
         }
         val iosSimulatorArm64Main by getting
@@ -73,7 +71,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.exoteric.sharedactor"
+    namespace = "com.exoteric"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
@@ -88,7 +86,7 @@ val org.jetbrains.kotlin.konan.target.KonanTarget.archVariant: String
         "ios-arm64_armv7"
     }
 
-val v = "1.2.4"
+val v = "1.2.11"
 group = "com.exoteric"
 version = v
 
@@ -100,5 +98,11 @@ publishing {
             artifactId = "sharedactor"
             version = v
         }
+    }
+}
+
+project.afterEvaluate {
+    project.components.forEach { component ->
+        println("component: " + component.name)
     }
 }

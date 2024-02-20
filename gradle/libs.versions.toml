@@ -6,7 +6,7 @@ compose-compiler = "1.5.4"
 compose-material3 = "1.2.0"
 androidx-activityCompose = "1.8.2"
 snftr-searchLib = "1.2.26"
-snftr-dbLib = "1.1.10"
+snftr-dbLib = "1.1.18"
 coroutines= "1.7.3"
 ktor = "2.0.0"
 
