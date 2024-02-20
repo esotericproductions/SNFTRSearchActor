@@ -40,8 +40,8 @@ kotlin {
                 //put your multiplatform dependencies here
                 implementation(libs.ktor.core)
                 implementation(libs.kotlinx.coroutines)
-                implementation(libs.snftr.searchLib)
-                implementation(libs.snftr.snftrDb)
+                api(libs.snftr.searchLib)
+                api(libs.snftr.snftrDb)
             }
         }
         commonTest.dependencies {
@@ -62,13 +62,11 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies{
                 dependsOn(commonMain)
-                implementation(libs.snftr.snftrDb)
             }
         }
         jvmMain {
             dependencies{
                 dependsOn(commonMain)
-                implementation(libs.snftr.snftrDb)
             }
         }
     }
@@ -90,7 +88,7 @@ val org.jetbrains.kotlin.konan.target.KonanTarget.archVariant: String
         "ios-arm64_armv7"
     }
 
-val v = "1.2.3"
+val v = "1.2.4"
 group = "com.exoteric"
 version = v
 
