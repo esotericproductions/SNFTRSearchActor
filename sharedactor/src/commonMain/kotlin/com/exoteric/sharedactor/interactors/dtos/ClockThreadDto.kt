@@ -3,7 +3,7 @@ package com.exoteric.sharedactor.interactors.dtos
 /**
  * Internal object used to consolidate provider api results
  */
-data class SnftrIDCThreadDto (
+data class ClockThreadDto (
     val uuid: String,
     val isDM: Boolean, // type
     val userUid: String,

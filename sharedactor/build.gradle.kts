@@ -39,6 +39,7 @@ kotlin {
                 //put your multiplatform dependencies here
                 implementation(libs.ktor.core)
                 implementation(libs.kotlinx.coroutines)
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
                 api(libs.snftr.searchLib)
                 api(libs.snftr.snftrDb)
             }
@@ -86,7 +87,7 @@ val org.jetbrains.kotlin.konan.target.KonanTarget.archVariant: String
         "ios-arm64_armv7"
     }
 
-val v = "1.2.11"
+val v = "1.2.12"
 group = "com.exoteric"
 version = v
 

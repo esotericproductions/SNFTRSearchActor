@@ -1,8 +1,12 @@
 package com.exoteric.sharedactor.interactors.flowers
 
+import com.exoteric.sharedactor.datasource.cached.models.SnftrIDCThreadEntity
+import com.exoteric.sharedactor.datasource.cached.models.SnftrIDUsrChatEntity
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.interactors.dtos.SnftrDto
+import com.exoteric.sharedactor.interactors.dtos.ClockThreadDto
+import com.exoteric.sharedactor.interactors.dtos.SnftrIDUsrChatDto
 
 interface SnftrSearchFlower {
     @Throws(Exception::class)
@@ -20,16 +24,44 @@ interface SnftrSearchCacheFlower {
             SnftrFlow<DataState<List<SnftrDto>>>
 }
 
-interface SnftrTrendsFlower {
+interface ClockThreadsCacheFlower {
     @Throws(Exception::class)
-    fun executeTrendsSearch(page: Int,
-                            isNewSearch: Boolean,
-                            isFirstSearch: Boolean):
-            SnftrFlow<DataState<List<SnftrDto>>>
+    fun fetchCachedThreadsFromDb(userUid: String):
+            SnftrFlow<DataState<List<ClockThreadDto>>>
 }
 
-interface SnftrTrendsCacheFlower {
+interface ClockThreadsFlower {
     @Throws(Exception::class)
-    fun executeTrendsCacheSearch(page: Int):
-            SnftrFlow<DataState<List<SnftrDto>>>
+    fun executeThreadsSearch(
+        userUid: String,
+        threads: MutableList<SnftrIDCThreadEntity>?):
+            SnftrFlow<DataState<List<ClockThreadDto>>>
+}
+
+
+interface IDAWNUsrChatMsgFlower {
+    @Throws(Exception::class)
+    fun executeIDUsrChatMsgsSearch(iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
+                                   userUid: String,
+                                   channelUid: String):
+            SnftrFlow<DataState<List<SnftrIDUsrChatDto>>>
+    @Throws(Exception::class)
+    fun executeIDUsrChatMsgsOnScroll(iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
+                                     userUid: String,
+                                     lastTime: Long,
+                                     channelUid: String):
+            SnftrFlow<DataState<List<SnftrIDUsrChatDto>>>
+}
+
+interface IDAWNUsrChatMsgCacheFlower {
+    @Throws(Exception::class)
+    fun fetchCachedIDUsrChatMessages(userUid: String,
+                                     channelUid: String):
+            SnftrFlow<DataState<List<SnftrIDUsrChatDto>>>
+    @Throws(Exception::class)
+    fun fetchOlderCachedMessagesBatch(userUid: String,
+                                      channelUid: String,
+                                      batch: Int,
+                                      timestamp: Long):
+            SnftrFlow<DataState<List<SnftrIDUsrChatDto>>>
 }
