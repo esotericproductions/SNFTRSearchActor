@@ -1,4 +1,4 @@
-package com.exoteric.sharedactor.interactors.dtos
+package com.exoteric.sharedactor.datasource.dtos
 
 import com.exoteric.sharedactor.interactors.SnftrObjectFatRt
 

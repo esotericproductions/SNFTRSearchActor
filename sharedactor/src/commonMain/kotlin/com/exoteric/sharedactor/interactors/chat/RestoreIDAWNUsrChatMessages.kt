@@ -3,12 +3,12 @@ package com.exoteric.pypnft.shared.interactors.rows.idchat
 import com.exoteric.pypnft.cached.ClockChatMessagesQueries
 import com.exoteric.pypnft.cached.IdawnChatMessage_Entity
 import com.exoteric.sharedactor.datasource.cached.models.SnftrIDUsrChatEntity
+import com.exoteric.sharedactor.datasource.dtos.SnftrIDUsrChatDto
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.interactors.chat.threads.getCachedUserProfilePic
 import com.exoteric.sharedactor.interactors.chat.threads.parseOriginatorBlob
-import com.exoteric.sharedactor.interactors.dtos.SnftrIDUsrChatDto
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.IDAWNUsrChatMsgCacheFlower
 import com.exoteric.snftrdblib.cached.SnftrDatabase
@@ -327,7 +327,7 @@ class RestoreIDAWNUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
 //        println("insertSnftrChatExpressions($chatUuid): inserting for -> $userUid")
         query.insertUserExpressions(
             id = getId(),
-            cmmtUuid = chatUuid,
+            uuid = chatUuid,
             userUid = userUid,
             isFav = isFav,
             thumbsups = tUp,
@@ -355,7 +355,7 @@ class RestoreIDAWNUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
             println("updateSnftrChatSingleForThumbsups(chatUuid): inserting with $thumbsups!")
             queryExpressions.insertUserExpressions(
                 id = getId(),
-                cmmtUuid = chatUuid,
+                uuid = chatUuid,
                 userUid = userUid,
                 isFav = 0,
                 thumbsups = thumbsups,
@@ -399,7 +399,7 @@ class RestoreIDAWNUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
                     " inserting with $thumbsdowns!")
             query.insertUserExpressions(
                 id = getId(),
-                cmmtUuid = chatUuid,
+                uuid = chatUuid,
                 userUid = userUid,
                 isFav = 0,
                 thumbsups = 0,
@@ -437,7 +437,7 @@ class RestoreIDAWNUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
                     " inserting with $flagged!")
             query.insertUserExpressions(
                 id = getId(),
-                cmmtUuid = chatUuid,
+                uuid = chatUuid,
                 userUid = userUid,
                 isFav = 0,
                 thumbsups = 0,
@@ -462,7 +462,7 @@ class RestoreIDAWNUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
             println("updateSnftrChatSingleFAV(chatUuid): inserting -> $isFav!")
             query.insertUserExpressions(
                 id = getId(),
-                cmmtUuid = chatUuid,
+                uuid = chatUuid,
                 userUid = userUid,
                 isFav = isFav,
                 thumbsups = 0,

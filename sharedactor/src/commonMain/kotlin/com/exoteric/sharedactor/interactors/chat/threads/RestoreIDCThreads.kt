@@ -4,8 +4,8 @@ import com.exoteric.sharedactor.datasource.cached.models.IDCThreadIconDetails
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
-import com.exoteric.sharedactor.interactors.dtos.ClockThreadDto
-import com.exoteric.sharedactor.interactors.dtos.SnftrIDUsrChatDto
+import com.exoteric.sharedactor.datasource.dtos.ClockThreadDto
+import com.exoteric.sharedactor.datasource.dtos.SnftrIDUsrChatDto
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.ClockThreadsCacheFlower
 import com.exoteric.snftrdblib.cached.SnftrDatabase

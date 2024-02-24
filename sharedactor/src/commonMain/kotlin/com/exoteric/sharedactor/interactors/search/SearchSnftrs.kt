@@ -6,8 +6,8 @@ import com.exoteric.sharedactor.datasource.cached.models.SnftrEntityMapper
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
-import com.exoteric.sharedactor.interactors.dtos.SnftrDto
-import com.exoteric.sharedactor.interactors.dtos.mappers.SnftrDtoMapper
+import com.exoteric.sharedactor.datasource.dtos.SnftrDto
+import com.exoteric.sharedactor.datasource.dtos.mappers.SnftrDtoMapper
 import com.exoteric.sharedactor.interactors.flowers.SnftrSearchFlower
 import com.exoteric.snftrsearchlibr.bingGifsTag
 import com.exoteric.snftrsearchlibr.bingTag

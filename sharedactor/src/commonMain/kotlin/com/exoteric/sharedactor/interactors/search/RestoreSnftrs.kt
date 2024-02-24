@@ -4,7 +4,7 @@ import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
-import com.exoteric.sharedactor.interactors.dtos.SnftrDto
+import com.exoteric.sharedactor.datasource.dtos.SnftrDto
 import com.exoteric.sharedactor.interactors.flowers.SnftrSearchCacheFlower
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow

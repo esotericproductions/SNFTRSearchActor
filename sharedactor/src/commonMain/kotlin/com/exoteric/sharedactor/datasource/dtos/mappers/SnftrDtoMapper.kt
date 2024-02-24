@@ -1,8 +1,8 @@
-package com.exoteric.sharedactor.interactors.dtos.mappers
+package com.exoteric.sharedactor.datasource.dtos.mappers
 
 import com.exoteric.sharedactor.datasource.cached.models.SnftrEntity
 import com.exoteric.sharedactor.domain.util.DomainMapper
-import com.exoteric.sharedactor.interactors.dtos.SnftrDto
+import com.exoteric.sharedactor.datasource.dtos.SnftrDto
 
 class SnftrDtoMapper : DomainMapper<SnftrEntity, SnftrDto> {
 

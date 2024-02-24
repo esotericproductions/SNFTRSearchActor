@@ -2,11 +2,13 @@ package com.exoteric.sharedactor.interactors.flowers
 
 import com.exoteric.sharedactor.datasource.cached.models.SnftrIDCThreadEntity
 import com.exoteric.sharedactor.datasource.cached.models.SnftrIDUsrChatEntity
+import com.exoteric.sharedactor.datasource.cached.models.SnftrUserEntity
+import com.exoteric.sharedactor.datasource.dtos.ClockThreadDto
+import com.exoteric.sharedactor.datasource.dtos.SnftrDto
+import com.exoteric.sharedactor.datasource.dtos.SnftrIDUsrChatDto
+import com.exoteric.sharedactor.datasource.dtos.ClockUserDto
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
-import com.exoteric.sharedactor.interactors.dtos.SnftrDto
-import com.exoteric.sharedactor.interactors.dtos.ClockThreadDto
-import com.exoteric.sharedactor.interactors.dtos.SnftrIDUsrChatDto
 
 interface SnftrSearchFlower {
     @Throws(Exception::class)
@@ -64,4 +66,18 @@ interface IDAWNUsrChatMsgCacheFlower {
                                       batch: Int,
                                       timestamp: Long):
             SnftrFlow<DataState<List<SnftrIDUsrChatDto>>>
+}
+
+interface SnftrUserFlower {
+    @Throws(Exception::class)
+    fun executeUserSearch(user: SnftrUserEntity
+    ): SnftrFlow<DataState<List<ClockUserDto>>>
+
+    @Throws(Exception::class)
+    fun executeUserFollowingSearch(uid: String): SnftrFlow<DataState<List<ClockUserDto>>>
+
+    @Throws(Exception::class)
+    fun executeUserRestoredSearch(users: MutableList<SnftrUserEntity>?,
+                                  currentUid: String):
+            SnftrFlow<DataState<List<ClockUserDto>>>
 }

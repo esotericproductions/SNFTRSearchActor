@@ -8,7 +8,7 @@ import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.interactors.chat.threads.getCachedUserProfilePic
 import com.exoteric.sharedactor.interactors.chat.threads.parseOriginatorBlob
-import com.exoteric.sharedactor.interactors.dtos.SnftrIDUsrChatDto
+import com.exoteric.sharedactor.datasource.dtos.SnftrIDUsrChatDto
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.IDAWNUsrChatMsgFlower
 import com.exoteric.snftrdblib.cached.SnftrDatabase

@@ -1,12 +1,12 @@
-package com.exoteric.sharedactor.interactors.dtos.mappers
+package com.exoteric.sharedactor.datasource.dtos.mappers
 
 import com.exoteric.sharedactor.datasource.cached.models.SnftrUserEntity
 import com.exoteric.sharedactor.domain.util.DomainMapper
-import com.exoteric.sharedactor.interactors.dtos.SnftrUserDto
+import com.exoteric.sharedactor.datasource.dtos.ClockUserDto
 
-class SnftrUserDtoMapper : DomainMapper<SnftrUserEntity, SnftrUserDto> {
-    override fun mapToDomainModel(model: SnftrUserEntity): SnftrUserDto {
-        return SnftrUserDto(
+class SnftrUserDtoMapper : DomainMapper<SnftrUserEntity, ClockUserDto> {
+    override fun mapToDomainModel(model: SnftrUserEntity): ClockUserDto {
+        return ClockUserDto(
             id = 0,
             uid = model.uid,
             name = model.name,
@@ -14,10 +14,7 @@ class SnftrUserDtoMapper : DomainMapper<SnftrUserEntity, SnftrUserDto> {
             username = model.username,
             profilePic = model.profilePic,
             backgroundPic = model.backgroundPic,
-            pstrsTime = model.pstrsTime,
             favsTime = model.favsTime,
-            cHistTime = model.cHistTime,
-            cAttsTime = model.cAttsTime,
             profilesBlob = model.profilesBlob,
             temperature = model.temperature,
             pressure = model.pressure,
@@ -25,7 +22,7 @@ class SnftrUserDtoMapper : DomainMapper<SnftrUserEntity, SnftrUserDto> {
         )
     }
 
-    override fun mapFromDomainModel(domainModel: SnftrUserDto): SnftrUserEntity {
+    override fun mapFromDomainModel(domainModel: ClockUserDto): SnftrUserEntity {
         return SnftrUserEntity(
             uid = domainModel.uid,
             name = domainModel.name,
@@ -33,10 +30,7 @@ class SnftrUserDtoMapper : DomainMapper<SnftrUserEntity, SnftrUserDto> {
             profilePic = domainModel.profilePic,
             backgroundPic = domainModel.backgroundPic,
             email = domainModel.email,
-            pstrsTime = domainModel.pstrsTime,
             favsTime = domainModel.favsTime,
-            cHistTime = domainModel.cHistTime,
-            cAttsTime = domainModel.cAttsTime,
             profilesBlob = domainModel.profilesBlob,
             temperature = domainModel.temperature,
             pressure = domainModel.pressure,
@@ -44,16 +38,16 @@ class SnftrUserDtoMapper : DomainMapper<SnftrUserEntity, SnftrUserDto> {
         )
     }
 
-    fun toDomainList(initial: List<SnftrUserEntity>?): List<SnftrUserDto>? {
+    fun toDomainList(initial: List<SnftrUserEntity>?): List<ClockUserDto>? {
         return initial?.map { mapToDomainModel(it) }
     }
 
 
-    fun toDomainNestedList(initial: List<List<SnftrUserEntity>>?): List<List<SnftrUserDto>>? {
+    fun toDomainNestedList(initial: List<List<SnftrUserEntity>>?): List<List<ClockUserDto>>? {
         return initial?.map { it.map { inList -> mapToDomainModel(inList) } }
     }
 
-    fun fromDomainList(initial: List<SnftrUserDto>? ): List<SnftrUserEntity>? {
+    fun fromDomainList(initial: List<ClockUserDto>? ): List<SnftrUserEntity>? {
         return initial?.map { mapFromDomainModel(it) }
     }
 }
