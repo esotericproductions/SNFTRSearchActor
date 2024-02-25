@@ -5,7 +5,7 @@ import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.datasource.dtos.ClockThreadDto
-import com.exoteric.sharedactor.datasource.dtos.SnftrIDUsrChatDto
+import com.exoteric.sharedactor.datasource.dtos.ClockIDUsrChatDto
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.ClockThreadsCacheFlower
 import com.exoteric.snftrdblib.cached.SnftrDatabase
@@ -97,14 +97,14 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
      * 2. parse the chat message data and update the threadsDB with current data
      * 3. send an updated SnftrIDUsrChatDto to UI layer
      */
-    private fun getIDUsrChatMessageByUUID(uuid: String, userUid: String?): SnftrIDUsrChatDto? {
+    private fun getIDUsrChatMessageByUUID(uuid: String, userUid: String?): ClockIDUsrChatDto? {
         if(userUid.isNullOrEmpty()) { return null }
         println("$TAG getIDUsrChatMessageByUUID()")
         val queries = snftrDatabase.clockChatMessagesQueries
         val entity = queries
             .getChatCommentByUuid(uuid)
             .executeAsOneOrNull()
-        var chat: SnftrIDUsrChatDto? = null
+        var chat: ClockIDUsrChatDto? = null
         if(entity != null) {
             getUserExpressionsForSnftrDto(
                 uuid = entity.chatUid,
@@ -117,7 +117,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                 } else {
                     entity.message
                 }
-                chat = SnftrIDUsrChatDto(
+                chat = ClockIDUsrChatDto(
                     userUid = entity.userUid,
                     posterUid = entity.posterUid,
                     chatUid = entity.chatUid,

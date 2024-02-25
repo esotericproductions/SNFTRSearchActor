@@ -8,6 +8,7 @@ data class SnftrUserEntity(
     val profilePic: String,
     val backgroundPic: String,
     val favsTime: Long,
+    val cAttsTime: Long,
     val email: String,
     val profilesBlob: String,
     val temperature: String,

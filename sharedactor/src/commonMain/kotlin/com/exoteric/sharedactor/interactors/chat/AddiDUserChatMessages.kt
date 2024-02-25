@@ -8,7 +8,7 @@ import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.interactors.chat.threads.getCachedUserProfilePic
 import com.exoteric.sharedactor.interactors.chat.threads.parseOriginatorBlob
-import com.exoteric.sharedactor.datasource.dtos.SnftrIDUsrChatDto
+import com.exoteric.sharedactor.datasource.dtos.ClockIDUsrChatDto
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.IDAWNUsrChatMsgFlower
 import com.exoteric.snftrdblib.cached.SnftrDatabase
@@ -22,7 +22,7 @@ class AddiDUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsr
     override fun executeIDUsrChatMsgsSearch(
         iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
         userUid: String,
-        channelUid: String): SnftrFlow<DataState<List<SnftrIDUsrChatDto>>> = flow {
+        channelUid: String): SnftrFlow<DataState<List<ClockIDUsrChatDto>>> = flow {
         try {
             emit(DataState.loading())
             val queries = snftrDatabase.clockChatMessagesQueries
@@ -48,12 +48,12 @@ class AddiDUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsr
                     threadUid = channelUid
             ).executeAsList()
             // 4. map and decorate the cached entities
-            val list: ArrayList<SnftrIDUsrChatDto> = mapAndDecorateChatDtos(cacheResult, userUid)
+            val list: ArrayList<ClockIDUsrChatDto> = mapAndDecorateChatDtos(cacheResult, userUid)
             println("$TAG Success! executeIDinChatMsgsSearch(): ${list.size}")
             // 5. emit List<SnftrIDUsrChatDto> from cache
             emit(DataState.success(list))
         } catch (e: Exception) {
-            emit(DataState.error<List<SnftrIDUsrChatDto>>(e.message ?: "$TAG Unknown Error - message null"))
+            emit(DataState.error<List<ClockIDUsrChatDto>>(e.message ?: "$TAG Unknown Error - message null"))
         }
     }.snftrFlow()
 
@@ -66,7 +66,7 @@ class AddiDUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsr
         iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
         userUid: String,
         lastTime: Long,
-        channelUid: String): SnftrFlow<DataState<List<SnftrIDUsrChatDto>>> = flow {
+        channelUid: String): SnftrFlow<DataState<List<ClockIDUsrChatDto>>> = flow {
         try {
             emit(DataState.loading())
             val queries = snftrDatabase.clockChatMessagesQueries
@@ -112,12 +112,12 @@ class AddiDUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsr
                 lastTime = lastTime
             ).executeAsList()
             // 4. map and decorate the cached entities
-            val list: ArrayList<SnftrIDUsrChatDto> = mapAndDecorateChatDtos(cacheResult, userUid)
+            val list: ArrayList<ClockIDUsrChatDto> = mapAndDecorateChatDtos(cacheResult, userUid)
             println("$TAG Success! executeIDUsrChatMsgsOnScroll(): ${list.size}")
             // 5. emit List<SnftrIDUsrChatDto> from cache
             emit(DataState.success(list))
         } catch (e: Exception) {
-            emit(DataState.error<List<SnftrIDUsrChatDto>>(e.message ?: "$TAG Unknown Error - message null"))
+            emit(DataState.error<List<ClockIDUsrChatDto>>(e.message ?: "$TAG Unknown Error - message null"))
         }
     }.snftrFlow()
 
@@ -130,10 +130,10 @@ class AddiDUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsr
     private fun mapAndDecorateChatDtos(
         cacheResult: List<IdawnChatMessage_Entity>,
         userUid: String
-    ): ArrayList<SnftrIDUsrChatDto> {
+    ): ArrayList<ClockIDUsrChatDto> {
         println("$TAG mapAndDecorateChatDtos.cacheResult size: ${cacheResult.size}")
         // map here since idawnChatMessage_Entity is generated
-        val list: ArrayList<SnftrIDUsrChatDto> = ArrayList()
+        val list: ArrayList<ClockIDUsrChatDto> = ArrayList()
         for (entity in cacheResult) {
             getUserExpressionsForSnftrDto(
                 uuid = entity.chatUid,
@@ -141,7 +141,7 @@ class AddiDUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsr
                 snftrDatabase = snftrDatabase
             ) {
                 list.add(
-                    SnftrIDUsrChatDto(
+                    ClockIDUsrChatDto(
                         userUid = entity.userUid,
                         posterUid = entity.posterUid,
                         chatUid = entity.chatUid,

@@ -14,6 +14,7 @@ data class ClockUserDto (
     val backgroundPic: String,
     val email: String,
     val favsTime: Long,
+    val cAttsTime: Long,
     val profilesBlob: String,
     val temperature: String,
     val pressure: String,

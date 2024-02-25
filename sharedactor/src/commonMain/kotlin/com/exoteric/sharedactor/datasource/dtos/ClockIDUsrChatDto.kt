@@ -3,7 +3,7 @@ package com.exoteric.sharedactor.datasource.dtos
 /**
  * Internal object used to consolidate insight chat convos
  */
-data class SnftrIDUsrChatDto (
+data class ClockIDUsrChatDto (
     val userUid: String,
     val posterUid: String,
     val latestProPic: String,

@@ -32,6 +32,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                     backgroundPic = user.backgroundPic,
                     email = user.email,
                     favsTime = user.favsTime,
+                    cAttsTime = user.cAttsTime,
                     profilesBlob = user.profilesBlob,
                     temperature = user.temperature,
                     pressure = user.pressure,
@@ -69,6 +70,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         profilePic = cachedUser.profilePic,
                         backgroundPic = cachedUser.backgroundPic,
                         favsTime = cachedUser.favsTime,
+                        cAttsTime = user.cAttsTime,
                         profilesBlob = cachedUser.profilesBlob,
                         temperature = cachedUser.temperature,
                         pressure = cachedUser.pressure,
@@ -112,6 +114,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         backgroundPic = user.backgroundPic,
                         email = user.email,
                         favsTime = user.favsTime,
+                        cAttsTime = user.cAttsTime,
                         profilesBlob = user.profilesBlob,
                         temperature = user.temperature,
                         pressure = user.pressure,
@@ -163,6 +166,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         profilePic = user.profilePic,
                         backgroundPic = user.backgroundPic,
                         favsTime = user.favsTime,
+                        cAttsTime = user.cAttsTime,
                         profilesBlob = user.profilesBlob,
                         // temperature is no longer used, it's all in UserDefaults for iOS
                         // so using the available field in the UserDto for this one scenario...
@@ -214,6 +218,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         profilePic = user.profilePic,
                         backgroundPic = user.backgroundPic,
                         favsTime = user.favsTime,
+                        cAttsTime = user.cAttsTime,
                         profilesBlob = user.profilesBlob,
                         // temperature is no longer used, it's all in UserDefaults for iOS
                         // so using the available field in the UserDto for this one scenario...
@@ -274,6 +279,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                 profilePic = user.profilePic,
                 backgroundPic = user.backgroundPic,
                 favsTime = user.favsTime,
+                cAttsTime = user.cAttsTime,
                 email = user.email,
                 profilesBlob = user.profilesBlob,
                 temperature = user.temperature,
@@ -306,6 +312,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                 backgroundPic = user.backgroundPic,
                 email = user.email,
                 favsTime = user.favsTime,
+                cAttsTime = user.cAttsTime,
                 profilesBlob = user.profilesBlob,
                 temperature = user.temperature,
                 pressure = user.pressure,
