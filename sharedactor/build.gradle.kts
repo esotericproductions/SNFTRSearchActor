@@ -90,7 +90,7 @@ val org.jetbrains.kotlin.konan.target.KonanTarget.archVariant: String
         "ios-arm64_armv7"
     }
 
-val v = "1.2.24"
+val v = "1.2.25"
 group = "com.exoteric"
 version = v
 
