@@ -9,7 +9,7 @@ import com.exoteric.sharedactor.interactors.SnftrObjectRt
 data class FavsDto(
     override val id: Int,
     val uid: String, // uid for querying in favorites rtdb
-    val bkmkUid: String, // uid for quering in bookmarks rtdb (not added if DetailCaller == .strends)
+    val cmmtUuid: String, // uid for quering in bookmarks rtdb (not added if DetailCaller == .strends)
     override val title: String,
     override val creator: String,
     override val creatorProfilePic: String,
