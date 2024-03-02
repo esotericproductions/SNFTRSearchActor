@@ -1,4 +1,4 @@
-package com.exoteric.pypnft.shared.interactors.rows.idchat
+package com.exoteric.sharedactor.interactors.chat
 
 import com.exoteric.pypnft.cached.ClockChatMessagesQueries
 import com.exoteric.pypnft.cached.IdawnChatMessage_Entity
@@ -15,7 +15,7 @@ import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.getId
 import kotlinx.coroutines.flow.flow
 
-class RestoreIDAWNUsrChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsrChatMsgCacheFlower {
+class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsrChatMsgCacheFlower {
     @Throws(Exception::class)
     override fun fetchCachedIDUsrChatMessages(userUid: String,
                                               channelUid: String):

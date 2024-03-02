@@ -15,7 +15,7 @@ import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.getId
 import kotlinx.coroutines.flow.flow
 
-class AddiDUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsrChatMsgFlower {
+class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsrChatMsgFlower {
     /**
      * Insert new incoming messages from the network.
      */

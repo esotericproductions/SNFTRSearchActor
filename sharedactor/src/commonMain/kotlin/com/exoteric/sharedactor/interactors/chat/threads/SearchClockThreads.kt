@@ -14,7 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 
 @ExperimentalCoroutinesApi
-class SearchIDCThreads(private val snftrDatabase: SnftrDatabase) : ClockThreadsFlower {
+class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThreadsFlower {
     override fun executeThreadsSearch(userUid: String,
                                       threads: MutableList<SnftrIDCThreadEntity>?):
             SnftrFlow<DataState<List<ClockThreadDto>>> = flow {

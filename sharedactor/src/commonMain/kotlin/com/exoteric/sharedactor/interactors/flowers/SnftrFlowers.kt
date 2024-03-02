@@ -3,6 +3,7 @@ package com.exoteric.sharedactor.interactors.flowers
 import com.exoteric.sharedactor.datasource.cached.models.ClockChatAttsEntity
 import com.exoteric.sharedactor.datasource.cached.models.FavsEntity
 import com.exoteric.sharedactor.datasource.cached.models.SnftrIDCThreadEntity
+import com.exoteric.sharedactor.datasource.cached.models.SnftrIDPEntity
 import com.exoteric.sharedactor.datasource.cached.models.SnftrIDUsrChatEntity
 import com.exoteric.sharedactor.datasource.cached.models.SnftrUserEntity
 import com.exoteric.sharedactor.datasource.dtos.ClockChatAttsDto
@@ -11,6 +12,7 @@ import com.exoteric.sharedactor.datasource.dtos.SnftrDto
 import com.exoteric.sharedactor.datasource.dtos.ClockIDUsrChatDto
 import com.exoteric.sharedactor.datasource.dtos.ClockUserDto
 import com.exoteric.sharedactor.datasource.dtos.FavsDto
+import com.exoteric.sharedactor.datasource.dtos.SnftrIDPDto
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 
@@ -121,4 +123,17 @@ interface CachedChatAttsFlower {
                                   currentSnftrUserUid: String?,
                                   page: Int):
             SnftrFlow<DataState<List<ClockChatAttsDto>>>
+}
+
+interface SnftrIDPurchasesHistoryFlower {
+    @Throws(Exception::class)
+    fun executeIDPurchasesSearch(idPurchases: MutableList<SnftrIDPEntity>?,
+                                 hashName: String):
+            SnftrFlow<DataState<List<SnftrIDPDto>>>
+}
+
+interface SnftrIDPurchasesCacheFlower {
+    @Throws(Exception::class)
+    fun fetchCachedIDAWNPurchases(hashName: String):
+            SnftrFlow<DataState<List<SnftrIDPDto>>>
 }
