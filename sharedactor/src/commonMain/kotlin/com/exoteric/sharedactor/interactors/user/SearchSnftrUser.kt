@@ -361,6 +361,46 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
         }
     }
 
+    fun updateCachedUserForBackgroundPic(blob: String,
+                                         uid: String,
+                                         completion: (result: Boolean) -> Unit) {
+        val queries = snftrDatabase.snftrUsersQueries
+        queries.updateBackgroundPicBlobForUser(blob, uid)
+        val user = queries.searchUsersByUid(uid).executeAsOneOrNull()
+        if (user != null) {
+            val updatedBlob = user.profilePic
+            val updated = updatedBlob.isNotEmpty() && updatedBlob == blob
+            if(updated) {
+                println("$TAG updateCachedUserForBackgroundPic() -> updatedBlob: $updated")
+                completion(updated)
+                return
+            }
+        }
+
+        println("$TAG updateCachedUserForBackgroundPic(): update failed!")
+        completion(false)
+    }
+
+    fun updateCachedUserForProPic(blob: String,
+                                  uid: String,
+                                  completion: (result: Boolean) -> Unit) {
+        val queries = snftrDatabase.snftrUsersQueries
+        queries.updateProPicBlobForUser(blob, uid)
+        val user = queries.searchUsersByUid(uid).executeAsOneOrNull()
+        if (user != null) {
+            val updatedBlob = user.profilePic
+            val updated = updatedBlob.isNotEmpty() && updatedBlob == blob
+            if(updated) {
+                println("$TAG updateCachedUserForProPic() -> updatedBlob: $updated")
+                completion(updated)
+                return
+            }
+        }
+
+        println("$TAG updateCachedUserForProPic(): update failed!")
+        completion(false)
+    }
+
     /**
      * Updates the user name from logged-in user profile tab.
      * Called from settings tab inside profile view.
