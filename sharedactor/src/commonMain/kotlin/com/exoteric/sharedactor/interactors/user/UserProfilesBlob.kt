@@ -2,6 +2,7 @@ package com.exoteric.sharedactor.interactors.user
 
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -63,4 +64,12 @@ fun parseOriginatorBlob(jsonString: String): OriginatorBlob {
     val name = jsonTree.jsonObject["name"]?.jsonPrimitive?.content ?: ""
     val uid = jsonTree.jsonObject["uid"]?.jsonPrimitive?.content ?: ""
     return OriginatorBlob(username, name, uid)
+}
+fun createOriginatorBlob(name: String, username: String, uid: String): String {
+    val jsonDict = mapOf(
+        "name" to name,
+        "username" to username,
+        "uid" to uid
+    )
+    return Json.encodeToString<Map<String, String>>(jsonDict)
 }

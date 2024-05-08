@@ -78,7 +78,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                     )
                 )
             }
-            println("$TAG Success! executeUserSearch(): {cachedUser?.uid}")
+            println("$TAG Success! executeUserSearch(): cachedUser?.uid")
             // emit List<SnftrUserDto> from cache
             emit(DataState.success(list))
         } catch (e: Exception) {
@@ -366,7 +366,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                                          completion: (result: Boolean) -> Unit) {
         val queries = snftrDatabase.snftrUsersQueries
         queries.updateBackgroundPicBlobForUser(blob, uid)
-        val user = queries.searchUsersByUid(uid).executeAsOneOrNull()
+        val user = queries.searchUsersByUid(uid = uid).executeAsOneOrNull()
         if (user != null) {
             val updatedBlob = user.profilePic
             val updated = updatedBlob.isNotEmpty() && updatedBlob == blob
