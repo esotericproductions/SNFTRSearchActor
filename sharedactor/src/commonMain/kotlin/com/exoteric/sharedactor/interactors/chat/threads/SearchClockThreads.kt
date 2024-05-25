@@ -40,11 +40,17 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         members = entity.members.toLong(),
                         info = entity.info,
                         name = entity.name,
-                        thymeStamp = entity.thymeStamp.toLong(),
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
                         latestProfilePic = entity.latestProfilePic,
                         originatorBlob = entity.originatorBlob,
+                        latestAggTime = entity.latestAggTime.toLong(),
+                        latestStartTime = entity.latestStartTime.toLong(),
+                        latestPauseTime = entity.latestPauseTime.toLong(),
+                        latestTimestamp = entity.latestTimestamp.toLong(),
+                        startTime = entity.startTime.toLong(),
+                        thymeStamp = entity.thymeStamp.toLong(),
+                        event = entity.event.toLong()
                     )
                 }
                 println("$TAG insertNewCThreadsIntoCache(): existing: " +
@@ -109,9 +115,15 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         name = entity.name,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-                        latestProfilePic = getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase) ?: entity.latestProfilePic,
-                        originatorBlob = entity.originatorBlob
-                        )
+                        latestProfilePic = entity.latestProfilePic,
+                        originatorBlob = entity.originatorBlob,
+                        latestAggTime = entity.latestAggTime.toDouble(),
+                        latestStartTime = entity.latestStartTime.toDouble(),
+                        latestPauseTime = entity.latestPauseTime.toDouble(),
+                        latestTimestamp = entity.latestTimestamp.toDouble(),
+                        startTime = entity.startTime.toDouble(),
+                        event = entity.event.toInt()
+                    )
                 )
             }
             println("$TAG Success! executeCThreadSearch(): ${list.size}")

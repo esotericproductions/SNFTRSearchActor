@@ -6,7 +6,6 @@ data class SnftrIDCThreadEntity(
     val isDM: Boolean, // type
     val userUid: String,
     val ownerUid: String,
-    val thymeStamp: Double,
     val messages: Int,
     val membersBlob: String,
     val members: Int,
@@ -15,7 +14,15 @@ data class SnftrIDCThreadEntity(
     val latestUrl: String,
     val latestPostQ: String,
     val latestProfilePic: String,
-    val originatorBlob: String)
+    val originatorBlob: String,
+    val thymeStamp: Double,
+    val latestAggTime: Double,
+    val latestTimestamp: Double,
+    val latestStartTime: Double,
+    val latestPauseTime: Double,
+    var startTime: Double,
+    val event: Int
+)
 
 data class IDCThreadIconDetails(
     val membersBlob: String,

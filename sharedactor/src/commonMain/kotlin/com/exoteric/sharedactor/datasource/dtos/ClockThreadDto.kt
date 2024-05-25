@@ -8,7 +8,6 @@ data class ClockThreadDto (
     val isDM: Boolean, // type
     val userUid: String,
     val ownerUid: String,
-    val thymeStamp: Double,
     val messages: Int,
     val membersBlob: String,
     val members: Int,
@@ -17,6 +16,13 @@ data class ClockThreadDto (
     val latestUrl: String,
     val latestPostQ: String,
     val latestProfilePic: String,
-    val originatorBlob: String
-)
+    val originatorBlob: String,
+    val thymeStamp: Double,
+    val latestAggTime: Double,
+    val latestTimestamp: Double,
+    val latestStartTime: Double,
+    val latestPauseTime: Double,
+    var startTime: Double,
+    val event: Int
+    )
 

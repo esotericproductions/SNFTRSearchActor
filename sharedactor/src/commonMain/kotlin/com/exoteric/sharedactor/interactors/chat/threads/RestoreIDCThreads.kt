@@ -46,7 +46,6 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                         isDM = entity.type == 1L,
                         userUid = userUid,
                         ownerUid = entity.ownerUid,
-                        thymeStamp = entity.thymeStamp.toDouble(),
                         messages = entity.messages.toInt(),
                         membersBlob = entity.membersBlob,
                         members = entity.members.toInt(),
@@ -55,7 +54,14 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
                         latestProfilePic = getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase) ?: entity.latestProfilePic,
-                        originatorBlob = entity.originatorBlob
+                        originatorBlob = entity.originatorBlob,
+                        latestAggTime = entity.latestAggTime.toDouble(),
+                        latestStartTime = entity.latestStartTime.toDouble(),
+                        latestPauseTime = entity.latestPauseTime.toDouble(),
+                        latestTimestamp = entity.latestTimestamp.toDouble(),
+                        startTime = entity.startTime.toDouble(),
+                        thymeStamp = entity.thymeStamp.toDouble(),
+                        event = entity.event.toInt()
                     )
                 )
             }
@@ -156,7 +162,6 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                 isDM = entity.type == 1L,
                 userUid = userUid,
                 ownerUid = entity.ownerUid,
-                thymeStamp = entity.thymeStamp.toDouble(),
                 messages = entity.messages.toInt(),
                 membersBlob = entity.membersBlob,
                 members = entity.members.toInt(),
@@ -165,7 +170,14 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                 latestUrl = entity.latestUrl,
                 latestPostQ = entity.latestPostQ,
                 latestProfilePic = getCachedUserProfilePic(entity.ownerUid, snftrDatabase) ?: entity.latestProfilePic,
-                originatorBlob = entity.originatorBlob
+                originatorBlob = entity.originatorBlob,
+                latestAggTime = entity.latestAggTime.toDouble(),
+                latestStartTime = entity.latestStartTime.toDouble(),
+                latestPauseTime = entity.latestPauseTime.toDouble(),
+                latestTimestamp = entity.latestTimestamp.toDouble(),
+                startTime = entity.startTime.toDouble(),
+                thymeStamp = entity.thymeStamp.toDouble(),
+                event = entity.event.toInt()
             )
         }
         return null
@@ -362,6 +374,7 @@ fun stringToArray(jsonString: String): List<String>? {
 }
 
 fun getCachedUserProfilePic(uid: String, snftrDatabase: SnftrDatabase): String? {
+    println("getCachedUserProfilePic(): $uid")
     val query = snftrDatabase.snftrUsersQueries
     val user = query.searchUsersByUid(uid = uid).executeAsOneOrNull()
     return if (user != null && user.profilePic.isNotEmpty()) {
