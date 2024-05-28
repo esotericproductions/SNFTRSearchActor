@@ -71,6 +71,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
     }.snftrFlow()
 
     fun getUpdatedThreadForLocalPost(chatUUID: String,
+                                     latestTimestamp: Long,
                                      userUid: String?): ClockThreadDto? {
         if(userUid.isNullOrEmpty()) { return null }
         println("$TAG getUpdatedThreadForLocalPost(): updating...")
@@ -87,7 +88,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                 originator = chatDto.originatorBlob,
                 latestPostQ = latestPostQ,
                 latestProfilePic = chatDto.latestProPic,
-                thymeStamp = chatDto.thymestamp,
+                latestTimestamp = latestTimestamp,
                 membersBlob = chatDto.membersBlob,
                 userUid = userUid
             )
@@ -219,6 +220,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                                 uuid: String,
                                 userUid: String,
                                 completion: (result: Boolean) -> Unit) {
+        println("updateCachedIconDetails(): $uuid -> membersBlob: $membersBlob")
         val query = snftrDatabase.clockThreadQueries
         val channel0 = query.getThreadForUpdateValidation(uuid, userUid).executeAsOneOrNull()
         if (channel0 != null && channel0.uuid == uuid && channel0.membersBlob != membersBlob) {
