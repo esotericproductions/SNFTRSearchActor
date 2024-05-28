@@ -80,6 +80,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                 for(entity in filteredThreadsUpdate) {
                     queries.updateThreadForThyme(
                         uuid = entity.uuid,
+                        event = entity.event.toLong(),
                         messages = entity.messages.toLong(),
                         originator = entity.originatorBlob,
                         latestUrl = entity.latestUrl,
