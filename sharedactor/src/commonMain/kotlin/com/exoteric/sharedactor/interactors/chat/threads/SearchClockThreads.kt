@@ -87,6 +87,9 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         latestPostQ = entity.latestPostQ,
                         latestProfilePic = entity.latestProfilePic,
                         latestTimestamp = entity.latestTimestamp.toLong(),
+                        latestStartTime = entity.latestStartTime.toLong(),
+                        latestPauseTime = entity.latestPauseTime.toLong(),
+                        latestAggTime = entity.latestAggTime.toLong(),
                         userUid = userUid
                     )
                 }
