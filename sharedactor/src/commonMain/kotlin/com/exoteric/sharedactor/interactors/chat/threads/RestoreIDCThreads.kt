@@ -29,7 +29,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
             SnftrFlow<DataState<List<ClockThreadDto>>> = flow {
         try {
             emit(DataState.loading())
-            delay(500)
+//            delay(500)
             // query the cache
             val queries = snftrDatabase.clockThreadQueries
             val cacheResult = queries
@@ -53,7 +53,8 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                         name = entity.name,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-                        latestProfilePic = getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase) ?: entity.latestProfilePic,
+//                        latestProfilePic = getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase) ?: entity.latestProfilePic,
+                        latestProfilePic = entity.latestProfilePic,
                         originatorBlob = entity.originatorBlob,
                         latestAggTime = entity.latestAggTime.toDouble(),
                         latestStartTime = entity.latestStartTime.toDouble(),
