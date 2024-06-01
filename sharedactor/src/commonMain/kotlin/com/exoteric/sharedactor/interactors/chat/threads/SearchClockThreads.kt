@@ -47,7 +47,12 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         name = entity.name,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-                        latestProfilePic = entity.latestProfilePic,
+                        latestProfilePic =
+                        if(entity.originatorBlob.isNotEmpty())
+                            getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase)
+                                ?: entity.latestProfilePic
+                        else entity.latestProfilePic,
+//                        latestProfilePic = entity.latestProfilePic,
                         originatorBlob = entity.originatorBlob,
                         latestAggTime = entity.latestAggTime.toLong(),
                         latestStartTime = entity.latestStartTime.toLong(),

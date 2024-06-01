@@ -53,8 +53,12 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                         name = entity.name,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-//                        latestProfilePic = getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase) ?: entity.latestProfilePic,
-                        latestProfilePic = entity.latestProfilePic,
+                        latestProfilePic =
+                        if(entity.originatorBlob.isNotEmpty())
+                            getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase)
+                                ?: entity.latestProfilePic
+                        else entity.latestProfilePic,
+//                        latestProfilePic = entity.latestProfilePic,
                         originatorBlob = entity.originatorBlob,
                         latestAggTime = entity.latestAggTime.toDouble(),
                         latestStartTime = entity.latestStartTime.toDouble(),
