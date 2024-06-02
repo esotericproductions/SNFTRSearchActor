@@ -22,7 +22,8 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
             emit(DataState.loading())
             val queries = snftrDatabase.clockThreadQueries
             delay(500)
-            val allCachedThreads = queries.selectAll(userUid = userUid).executeAsList()
+            val allCachedThreads =
+                queries.selectAll(userUid = userUid).executeAsList()
 
             println("$TAG - executeThreadsSearch().allCachedThreads -> ${allCachedThreads.size}")
             val allCachedMappedToUUID = allCachedThreads.map { it.uuid }
@@ -30,9 +31,9 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
             // aka: new collections
             val filteredThreadsNew =
                 getNewFilteredThreadsOnlyNew(threads, allCachedMappedToUUID)
+
             if (filteredThreadsNew != null) {
                 println("$TAG - executeThreadsSearch().filteredThreadsNew -> ${filteredThreadsNew.size}")
-
                 for (entity in filteredThreadsNew) {
                     queries.insertThread(
                         id = getId(),
@@ -47,12 +48,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         name = entity.name,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-                        latestProfilePic =
-                        if(entity.originatorBlob.isNotEmpty())
-                            getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase)
-                                ?: entity.latestProfilePic
-                        else entity.latestProfilePic,
-//                        latestProfilePic = entity.latestProfilePic,
+                        latestProfilePic = entity.latestProfilePic,
                         originatorBlob = entity.originatorBlob,
                         latestAggTime = entity.latestAggTime.toLong(),
                         latestStartTime = entity.latestStartTime.toLong(),
@@ -81,8 +77,23 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                     allCachedMappedToUUID,
                     allCachedThreads
                 )
+            val usersQueries = snftrDatabase.snftrUsersQueries
             if (filteredThreadsUpdate != null) {
                 for(entity in filteredThreadsUpdate) {
+                    val cPP = getCachedUserProfilePic(
+                        parseOriginatorBlob(entity.originatorBlob).uid,
+                        snftrDatabase
+                    )
+                    println("$TAG YODELER: --> $cPP")
+                    val latestProPic =
+                        if(entity.originatorBlob.isNotEmpty()) {
+                            cPP ?: entity.latestProfilePic
+                        } else entity.latestProfilePic
+
+//                    if(latestProPic != entity.latestProfilePic) {
+//                        println("$TAG - executeThreadsSearch().updateProPicBlobForUser")
+//                        usersQueries.updateProPicBlobForUser(latestProPic, parseOriginatorBlob(entity.originatorBlob).uid)
+//                    }
                     queries.updateThreadForThyme(
                         uuid = entity.uuid,
                         event = entity.event.toLong(),
@@ -90,7 +101,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         originator = entity.originatorBlob,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-                        latestProfilePic = entity.latestProfilePic,
+                        latestProfilePic = latestProPic,
                         latestTimestamp = entity.latestTimestamp.toLong(),
                         latestStartTime = entity.latestStartTime.toLong(),
                         latestPauseTime = entity.latestPauseTime.toLong(),
@@ -109,7 +120,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
             val cacheResult = queries
                 .restoreAllThread(
                     userUid = userUid,
-                    limit = 60,  // TODO: better limit!
+                    limit = 60,  // TODO: better limit! Needs pagination...
                     offset = 0
                 ).executeAsList()
             println("$TAG cacheResult: ${cacheResult.size}")

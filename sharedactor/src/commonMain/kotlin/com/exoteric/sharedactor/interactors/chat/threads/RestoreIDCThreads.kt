@@ -381,10 +381,10 @@ fun stringToArray(jsonString: String): List<String>? {
 }
 
 fun getCachedUserProfilePic(uid: String, snftrDatabase: SnftrDatabase): String? {
-    println("getCachedUserProfilePic(): $uid")
     val query = snftrDatabase.snftrUsersQueries
     val user = query.searchUsersByUid(uid = uid).executeAsOneOrNull()
     return if (user != null && user.profilePic.isNotEmpty()) {
+//        println("getCachedUserProfilePic(): ${user.profilePic}")
         user.profilePic
     } else {
         null
