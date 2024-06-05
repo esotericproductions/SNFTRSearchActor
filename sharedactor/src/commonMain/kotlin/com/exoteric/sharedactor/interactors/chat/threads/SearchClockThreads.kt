@@ -84,7 +84,6 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         parseOriginatorBlob(entity.originatorBlob).uid,
                         snftrDatabase
                     )
-                    println("$TAG YODELER: --> $cPP")
                     val latestProPic =
                         if(entity.originatorBlob.isNotEmpty()) {
                             cPP ?: entity.latestProfilePic

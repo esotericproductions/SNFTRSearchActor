@@ -152,7 +152,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                 .executeAsList()
             val filteredUsers =
                 allCachedUsers.distinct().filter { fp -> fp.uid != currentUid }
-            println("${TAG} executeAllUserRestoredSearch(): existing: ${allCachedUsers.size} " +
+            println("$TAG executeAllUserRestoredSearch(): existing: ${allCachedUsers.size} " +
                     "--- adding: ${filteredUsers.size}")
             val list = arrayListOf<ClockUserDto>()
             for (user in filteredUsers) {
