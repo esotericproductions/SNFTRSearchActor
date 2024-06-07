@@ -225,7 +225,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                                 uuid: String,
                                 userUid: String,
                                 completion: (result: Boolean) -> Unit) {
-        println("updateCachedIconDetails(): $uuid -> membersBlob: $membersBlob")
+        println("updateCachedIconDetails():")
         val query = snftrDatabase.clockThreadQueries
         val channel0 = query.getThreadForUpdateValidation(uuid, userUid).executeAsOneOrNull()
         if (channel0 != null && channel0.uuid == uuid && channel0.membersBlob != membersBlob) {
