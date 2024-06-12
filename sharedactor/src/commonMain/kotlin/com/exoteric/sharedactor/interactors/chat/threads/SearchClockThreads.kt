@@ -21,7 +21,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
         try {
             emit(DataState.loading())
             val queries = snftrDatabase.clockThreadQueries
-            delay(500)
+//            delay(500)
             val allCachedThreads =
                 queries.selectAll(userUid = userUid).executeAsList()
 

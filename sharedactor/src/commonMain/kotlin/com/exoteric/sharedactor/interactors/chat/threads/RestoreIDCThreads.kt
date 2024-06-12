@@ -285,6 +285,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         println("$TAG resetForNewLogin()")
         return true
     }
+
     fun getDMItemCount(uid: String): Int {
         val itemCount = snftrDatabase.clockThreadQueries
             .selectCountAll(type = 1, uid = uid)

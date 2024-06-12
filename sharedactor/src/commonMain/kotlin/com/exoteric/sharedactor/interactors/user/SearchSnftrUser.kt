@@ -49,6 +49,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                     scoresBlob = user.scoresBlob,
                     profilePic = user.profilePic,
                     backgroundPic = user.backgroundPic,
+                    profilesBlob = user.profilesBlob,
                     // for this user
                     user.uid
                 )
