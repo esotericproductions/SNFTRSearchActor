@@ -3,7 +3,7 @@ package com.exoteric.sharedactor.datasource.cached.models
 //goes to IDAWNChatThread.sq
 data class SnftrIDCThreadEntity(
     val uuid: String,
-    val isDM: Boolean, // type
+    val isTimer: Boolean, // type
     val userUid: String,
     val ownerUid: String,
     val messages: Int,

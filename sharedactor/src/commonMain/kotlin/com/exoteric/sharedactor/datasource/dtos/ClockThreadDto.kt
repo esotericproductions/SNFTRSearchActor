@@ -5,7 +5,7 @@ package com.exoteric.sharedactor.datasource.dtos
  */
 data class ClockThreadDto (
     val uuid: String,
-    val isDM: Boolean, // type
+    val isTimer: Boolean, // type
     val userUid: String,
     val ownerUid: String,
     val messages: Int,

@@ -1,18 +1,16 @@
 package com.exoteric.sharedactor.interactors.chat.threads
 
 import com.exoteric.sharedactor.datasource.cached.models.IDCThreadIconDetails
+import com.exoteric.sharedactor.datasource.dtos.ClockIDUsrChatDto
+import com.exoteric.sharedactor.datasource.dtos.ClockThreadDto
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
-import com.exoteric.sharedactor.datasource.dtos.ClockThreadDto
-import com.exoteric.sharedactor.datasource.dtos.ClockIDUsrChatDto
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.ClockThreadsCacheFlower
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.ITEMS_PER_PG_PROVIDER_SEARCH
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
@@ -43,7 +41,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                 list.add(
                     ClockThreadDto(
                         uuid = entity.uuid,
-                        isDM = entity.type == 1L,
+                        isTimer = entity.type == 1L,
                         userUid = userUid,
                         ownerUid = entity.ownerUid,
                         messages = entity.messages.toInt(),
@@ -165,7 +163,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         if(entity != null) {
             return ClockThreadDto(
                 uuid = entity.uuid,
-                isDM = entity.type == 1L,
+                isTimer = entity.type == 1L,
                 userUid = userUid,
                 ownerUid = entity.ownerUid,
                 messages = entity.messages.toInt(),
@@ -380,6 +378,7 @@ fun stringToArray(jsonString: String): List<String>? {
         null
     }
 }
+
 
 fun getCachedUserProfilePic(uid: String, snftrDatabase: SnftrDatabase): String? {
     val query = snftrDatabase.snftrUsersQueries

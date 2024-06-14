@@ -37,7 +37,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                 for (entity in filteredThreadsNew) {
                     queries.insertThread(
                         id = getId(),
-                        type = if(entity.isDM) 1L else 0L,
+                        type = if(entity.isTimer) 1L else 0L,
                         uuid = entity.uuid,
                         userUid = entity.userUid,
                         ownerUid = entity.ownerUid,
@@ -133,7 +133,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                 list.add(
                     ClockThreadDto(
                         uuid = entity.uuid,
-                        isDM = entity.type == 1L,
+                        isTimer = entity.type == 1L,
                         userUid = userUid,
                         ownerUid = entity.ownerUid,
                         thymeStamp = entity.thymeStamp.toDouble(),

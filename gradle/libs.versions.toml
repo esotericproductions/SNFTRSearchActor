@@ -5,7 +5,7 @@ snftr-searchLib = "1.2.32"
 snftr-dbLib = "1.2.01"
 coroutines= "1.7.3"
 ktor = "2.3.9"
-kotlinx-json = "1.3.3"
+kotlinx-json = "1.5.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

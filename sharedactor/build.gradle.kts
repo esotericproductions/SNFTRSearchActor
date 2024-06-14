@@ -43,7 +43,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines)
 //                implementation(libs.kotlinx.json)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
                 api(libs.snftr.searchLib)
                 api(libs.snftr.snftrDb)
             }
@@ -91,7 +91,7 @@ val org.jetbrains.kotlin.konan.target.KonanTarget.archVariant: String
         "ios-arm64_armv7"
     }
 
-val v = "1.2.68"
+val v = "1.2.69"
 group = "com.exoteric"
 version = v
 
