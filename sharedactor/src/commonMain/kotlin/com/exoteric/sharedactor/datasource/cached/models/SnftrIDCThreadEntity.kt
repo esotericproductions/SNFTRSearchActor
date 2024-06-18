@@ -4,6 +4,7 @@ package com.exoteric.sharedactor.datasource.cached.models
 data class SnftrIDCThreadEntity(
     val uuid: String,
     val isTimer: Boolean, // type
+    val synced: Boolean, // type
     val userUid: String,
     val ownerUid: String,
     val messages: Int,
@@ -20,6 +21,7 @@ data class SnftrIDCThreadEntity(
     val latestTimestamp: Double,
     val latestStartTime: Double,
     val latestPauseTime: Double,
+    val latestStopTime: Double,
     var startTime: Double,
     val event: Int
 )

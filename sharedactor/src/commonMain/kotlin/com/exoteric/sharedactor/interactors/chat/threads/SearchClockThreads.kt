@@ -38,6 +38,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                     queries.insertThread(
                         id = getId(),
                         type = if(entity.isTimer) 1L else 0L,
+                        synced = if(entity.synced) 1L else 0L,
                         uuid = entity.uuid,
                         userUid = entity.userUid,
                         ownerUid = entity.ownerUid,
@@ -54,6 +55,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         latestStartTime = entity.latestStartTime.toLong(),
                         latestPauseTime = entity.latestPauseTime.toLong(),
                         latestTimestamp = entity.latestTimestamp.toLong(),
+                        latestStopTime = entity.latestStopTime.toLong(),
                         startTime = entity.startTime.toLong(),
                         thymeStamp = entity.thymeStamp.toLong(),
                         event = entity.event.toLong()
@@ -91,6 +93,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                     queries.updateThreadForThyme(
                         uuid = entity.uuid,
                         event = entity.event.toLong(),
+                        synced = if(entity.synced) 1L else 0L,
                         messages = entity.messages.toLong(),
                         originator = entity.originatorBlob,
                         latestUrl = entity.latestUrl,
@@ -99,6 +102,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         latestTimestamp = entity.latestTimestamp.toLong(),
                         latestStartTime = entity.latestStartTime.toLong(),
                         latestPauseTime = entity.latestPauseTime.toLong(),
+                        latestStopTime = entity.latestStopTime.toLong(),
                         latestAggTime = entity.latestAggTime.toLong(),
                         userUid = userUid
                     )
@@ -129,6 +133,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                     ClockThreadDto(
                         uuid = entity.uuid,
                         isTimer = entity.type == 1L,
+                        synced = entity.synced == 1L,
                         userUid = userUid,
                         ownerUid = entity.ownerUid,
                         thymeStamp = entity.thymeStamp.toDouble(),
@@ -145,6 +150,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         latestStartTime = entity.latestStartTime.toDouble(),
                         latestPauseTime = entity.latestPauseTime.toDouble(),
                         latestTimestamp = entity.latestTimestamp.toDouble(),
+                        latestStopTime = entity.latestStopTime.toDouble(),
                         startTime = entity.startTime.toDouble(),
                         event = entity.event.toInt()
                     )

@@ -331,6 +331,7 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
         if (entity != null) {
 //            println("insertSnftrCmmtExpressions():" +
 //                    " this expressions row already exists for ($cmmtUuid) & user -> $userUid!")
+            myCallback(false)
             return
         }
 //        println("insertSnftrChatExpressions($chatUuid): inserting for -> $userUid")

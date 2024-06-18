@@ -61,10 +61,12 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                         latestAggTime = entity.latestAggTime.toDouble(),
                         latestStartTime = entity.latestStartTime.toDouble(),
                         latestPauseTime = entity.latestPauseTime.toDouble(),
+                        latestStopTime = entity.latestStopTime.toDouble(),
                         latestTimestamp = entity.latestTimestamp.toDouble(),
                         startTime = entity.startTime.toDouble(),
                         thymeStamp = entity.thymeStamp.toDouble(),
-                        event = entity.event.toInt()
+                        event = entity.event.toInt(),
+                        synced = entity.synced == 1L
                     )
                 )
             }
@@ -178,10 +180,12 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                 latestAggTime = entity.latestAggTime.toDouble(),
                 latestStartTime = entity.latestStartTime.toDouble(),
                 latestPauseTime = entity.latestPauseTime.toDouble(),
+                latestStopTime = entity.latestStopTime.toDouble(),
                 latestTimestamp = entity.latestTimestamp.toDouble(),
                 startTime = entity.startTime.toDouble(),
                 thymeStamp = entity.thymeStamp.toDouble(),
-                event = entity.event.toInt()
+                event = entity.event.toInt(),
+                synced = entity.synced == 1L
             )
         }
         return null
