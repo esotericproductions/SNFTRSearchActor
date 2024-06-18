@@ -77,7 +77,6 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                     allCachedMappedToUUID,
                     allCachedThreads
                 )
-            val usersQueries = snftrDatabase.snftrUsersQueries
             if (filteredThreadsUpdate != null) {
                 for(entity in filteredThreadsUpdate) {
                     val cPP = getCachedUserProfilePic(
@@ -89,10 +88,6 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                             cPP ?: entity.latestProfilePic
                         } else entity.latestProfilePic
 
-//                    if(latestProPic != entity.latestProfilePic) {
-//                        println("$TAG - executeThreadsSearch().updateProPicBlobForUser")
-//                        usersQueries.updateProPicBlobForUser(latestProPic, parseOriginatorBlob(entity.originatorBlob).uid)
-//                    }
                     queries.updateThreadForThyme(
                         uuid = entity.uuid,
                         event = entity.event.toLong(),
