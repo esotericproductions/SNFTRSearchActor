@@ -21,17 +21,15 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
         try {
             emit(DataState.loading())
             val queries = snftrDatabase.clockThreadQueries
-//            delay(500)
+//            delay(if((threads?.size ?: 0) > 1) 500 else 0)
             val allCachedThreads =
                 queries.selectAll(userUid = userUid).executeAsList()
-
             println("$TAG - executeThreadsSearch().allCachedThreads -> ${allCachedThreads.size}")
             val allCachedMappedToUUID = allCachedThreads.map { it.uuid }
             // list of collections that do not have any rows in the db with matching uuid columns
             // aka: new collections
             val filteredThreadsNew =
                 getNewFilteredThreadsOnlyNew(threads, allCachedMappedToUUID)
-
             if (filteredThreadsNew != null) {
                 println("$TAG - executeThreadsSearch().filteredThreadsNew -> ${filteredThreadsNew.size}")
                 for (entity in filteredThreadsNew) {
