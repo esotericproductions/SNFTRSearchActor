@@ -185,6 +185,8 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
         allCachedThreads: List<ChatThread_Entity>
     ) = collections?.filter { collection ->
         (collection.uuid in allCachedMappedToUUID)
+//                && (collection.event.toLong() != (allCachedThreads.first { it.uuid == collection.uuid }.event))
+                && (collection.synced != (allCachedThreads.first { it.uuid == collection.uuid }.synced == 0L))
                 && (collection.latestTimestamp.toLong() !in allCachedThreads.map { it.latestTimestamp })
     }
 
