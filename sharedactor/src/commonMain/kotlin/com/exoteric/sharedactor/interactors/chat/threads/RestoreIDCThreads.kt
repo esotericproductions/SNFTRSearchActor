@@ -1,5 +1,6 @@
 package com.exoteric.sharedactor.interactors.chat.threads
 
+import com.exoteric.pypnft.cached.ChatThread_Entity
 import com.exoteric.sharedactor.datasource.cached.models.IDCThreadIconDetails
 import com.exoteric.sharedactor.datasource.dtos.ClockIDUsrChatDto
 import com.exoteric.sharedactor.datasource.dtos.ClockThreadDto
@@ -39,37 +40,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
             val list = arrayListOf<ClockThreadDto>()
             for (entity in cacheResult) {
                 list.add(
-                    ClockThreadDto(
-                        uuid = entity.uuid,
-                        isTimer = entity.type == 1L,
-                        userUid = userUid,
-                        ownerUid = entity.ownerUid,
-                        messages = entity.messages.toInt(),
-                        membersBlob = entity.membersBlob,
-                        members = entity.members.toInt(),
-                        info = entity.info,
-                        name = entity.name,
-                        latestUrl = entity.latestUrl,
-                        latestPostQ = entity.latestPostQ,
-                        latestProfilePic =
-                        if(entity.originatorBlob.isNotEmpty())
-                            getCachedUserProfilePic(
-                                parseOriginatorBlob(entity.originatorBlob).uid,
-                                snftrDatabase
-                            ) ?: entity.latestProfilePic
-                        else entity.latestProfilePic,
-//                        latestProfilePic = entity.latestProfilePic,
-                        originatorBlob = entity.originatorBlob,
-                        latestAggTime = entity.latestAggTime.toDouble(),
-                        latestStartTime = entity.latestStartTime.toDouble(),
-                        latestPauseTime = entity.latestPauseTime.toDouble(),
-                        latestStopTime = entity.latestStopTime.toDouble(),
-                        latestTimestamp = entity.latestTimestamp.toDouble(),
-                        startTime = entity.startTime.toDouble(),
-                        thymeStamp = entity.thymeStamp.toDouble(),
-                        event = entity.event.toInt(),
-                        synced = entity.synced == 1L
-                    )
+                    getUpdatedThreadDto(entity, snftrDatabase)
                 )
             }
             emit(DataState.success(list))
@@ -131,6 +102,20 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                 } else {
                     entity.message
                 }
+                val blob = parseOriginatorBlob(entity.originatorBlob)
+                val latestUserData =
+                    getCachedUserData(
+                        uid = userUid,
+                        entityProPic = entity.latestProPic,
+                        entityName = blob.name,
+                        entityUsername = blob.username,
+                        snftrDatabase
+                    )
+                val newBlob = createOriginatorBlob(
+                    name = latestUserData.name,
+                    username = latestUserData.username,
+                    uid = userUid
+                )
                 chat = ClockIDUsrChatDto(
                     userUid = entity.userUid,
                     posterUid = entity.posterUid,
@@ -138,11 +123,11 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                     type = entity.type,
                     threadUid = entity.threadUid,
                     message = latestPostQ ,
-                    latestProPic = getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase) ?: entity.latestProPic,
+                    latestProPic = latestUserData.proPic,
                     messageData = entity.messageData,
                     scoresBlob = entity.scoresBlob,
                     membersBlob = entity.membersBlob,
-                    originatorBlob = entity.originatorBlob,
+                    originatorBlob = newBlob,
                     thymestamp = (entity.thymestamp * 1000),
                     thumbsdownsCount = entity.thumbsdownsCount,
                     thumbsupsCount = entity.thumbsupsCount,
@@ -165,30 +150,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         val entity = queries.getThreadByUuid(uuid, userUid)
             .executeAsOneOrNull()
         if(entity != null) {
-            return ClockThreadDto(
-                uuid = entity.uuid,
-                isTimer = entity.type == 1L,
-                userUid = userUid,
-                ownerUid = entity.ownerUid,
-                messages = entity.messages.toInt(),
-                membersBlob = entity.membersBlob,
-                members = entity.members.toInt(),
-                info = entity.info,
-                name = entity.name,
-                latestUrl = entity.latestUrl,
-                latestPostQ = entity.latestPostQ,
-                latestProfilePic = getCachedUserProfilePic(entity.ownerUid, snftrDatabase) ?: entity.latestProfilePic,
-                originatorBlob = entity.originatorBlob,
-                latestAggTime = entity.latestAggTime.toDouble(),
-                latestStartTime = entity.latestStartTime.toDouble(),
-                latestPauseTime = entity.latestPauseTime.toDouble(),
-                latestStopTime = entity.latestStopTime.toDouble(),
-                latestTimestamp = entity.latestTimestamp.toDouble(),
-                startTime = entity.startTime.toDouble(),
-                thymeStamp = entity.thymeStamp.toDouble(),
-                event = entity.event.toInt(),
-                synced = entity.synced == 1L
-            )
+            return getUpdatedThreadDto(entity, snftrDatabase)
         }
         return null
     }
@@ -383,6 +345,27 @@ fun stringToArray(jsonString: String): List<String>? {
     }
 }
 
+data class CachedUserProfileInfo(val name: String, val username: String, val proPic: String)
+
+fun getCachedUserData(
+    uid: String,
+    entityProPic: String,
+    entityName: String,
+    entityUsername: String,
+    snftrDatabase: SnftrDatabase
+): CachedUserProfileInfo {
+    val query = snftrDatabase.snftrUsersQueries
+    val user = query.searchUsersByUid(uid = uid).executeAsOneOrNull()
+    return if (user != null
+        && user.profilePic.isNotEmpty()
+        && user.name.isNotEmpty()
+        && user.username.isNotEmpty()) {
+//        println("getCachedUserProfilePic(): ${user.profilePic}")
+        CachedUserProfileInfo(user.name, user.username, user.profilePic)
+    } else {
+        CachedUserProfileInfo(entityName, entityUsername, entityProPic)
+    }
+}
 
 fun getCachedUserProfilePic(uid: String, snftrDatabase: SnftrDatabase): String? {
     val query = snftrDatabase.snftrUsersQueries
@@ -404,4 +387,50 @@ fun parseOriginatorBlob(jsonString: String): OriginatorBlob {
     val name = jsonTree.jsonObject["name"]?.jsonPrimitive?.content ?: ""
     val uid = jsonTree.jsonObject["uid"]?.jsonPrimitive?.content ?: ""
     return OriginatorBlob(username, name, uid)
+}
+
+
+fun getUpdatedThreadDto(
+    entity: ChatThread_Entity,
+    snftrDatabase: SnftrDatabase
+): ClockThreadDto {
+    val blob = parseOriginatorBlob(entity.originatorBlob)
+    val latestUserData =
+        getCachedUserData(
+            uid = blob.uid,
+            entityProPic = entity.latestProfilePic,
+            entityName = blob.name,
+            entityUsername = blob.username,
+            snftrDatabase
+        )
+    val newBlob = createOriginatorBlob(
+        name = latestUserData.name,
+        username = latestUserData.username,
+        uid = blob.uid
+    )
+
+    return ClockThreadDto(
+        uuid = entity.uuid,
+        isTimer = entity.type == 1L,
+        userUid = entity.userUid,
+        ownerUid = entity.ownerUid,
+        messages = entity.messages.toInt(),
+        membersBlob = entity.membersBlob,
+        members = entity.members.toInt(),
+        info = entity.info,
+        name = entity.name,
+        latestUrl = entity.latestUrl,
+        latestPostQ = entity.latestPostQ,
+        latestProfilePic = latestUserData.proPic,
+        originatorBlob = newBlob,
+        latestAggTime = entity.latestAggTime.toDouble(),
+        latestStartTime = entity.latestStartTime.toDouble(),
+        latestPauseTime = entity.latestPauseTime.toDouble(),
+        latestStopTime = entity.latestStopTime.toDouble(),
+        latestTimestamp = entity.latestTimestamp.toDouble(),
+        startTime = entity.startTime.toDouble(),
+        thymeStamp = entity.thymeStamp.toDouble(),
+        event = entity.event.toInt(),
+        synced = entity.synced == 1L
+    )
 }

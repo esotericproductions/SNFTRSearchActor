@@ -3,12 +3,13 @@ package com.exoteric.sharedactor.interactors.chat
 import com.exoteric.pypnft.cached.ClockChatMessagesQueries
 import com.exoteric.pypnft.cached.IdawnChatMessage_Entity
 import com.exoteric.sharedactor.datasource.cached.models.SnftrIDUsrChatEntity
+import com.exoteric.sharedactor.datasource.dtos.ClockIDUsrChatDto
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
-import com.exoteric.sharedactor.interactors.chat.threads.getCachedUserProfilePic
+import com.exoteric.sharedactor.interactors.chat.threads.createOriginatorBlob
+import com.exoteric.sharedactor.interactors.chat.threads.getCachedUserData
 import com.exoteric.sharedactor.interactors.chat.threads.parseOriginatorBlob
-import com.exoteric.sharedactor.datasource.dtos.ClockIDUsrChatDto
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.IDAWNUsrChatMsgFlower
 import com.exoteric.snftrdblib.cached.SnftrDatabase
@@ -137,15 +138,19 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
         for (entity in cacheResult) {
             // update user if in db
             val blob = parseOriginatorBlob(entity.originatorBlob)
-            if (userIsInDb(blob.uid)) {
-                val userQueries = snftrDatabase.snftrUsersQueries
-                userQueries.updateUserForContentUpdate(
-                    name = blob.name,
-                    handle = blob.username,
-                    profilePic = entity.latestProPic,
-                    uid = blob.uid
+            val latestUserData =
+                getCachedUserData(
+                    uid = blob.uid,
+                    entityProPic = entity.latestProPic,
+                    entityName = blob.name,
+                    entityUsername = blob.username,
+                    snftrDatabase
                 )
-            }
+            val newBlob = createOriginatorBlob(
+                name = latestUserData.name,
+                username = latestUserData.username,
+                uid = blob.uid
+            )
             getUserExpressionsForSnftrDto(
                 uuid = entity.chatUid,
                 userUid = userUid,
@@ -159,17 +164,11 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
                         type = entity.type,
                         threadUid = entity.threadUid,
                         message = entity.message,
-                        latestProPic =
-                        if(entity.originatorBlob.isNotEmpty())
-                            getCachedUserProfilePic(
-                                parseOriginatorBlob(entity.originatorBlob).uid,
-                                snftrDatabase
-                            ) ?: entity.latestProPic
-                        else entity.latestProPic,
+                        latestProPic = latestUserData.proPic,
                         messageData = entity.messageData,
                         scoresBlob = entity.scoresBlob,
                         membersBlob = entity.membersBlob,
-                        originatorBlob = entity.originatorBlob,
+                        originatorBlob = newBlob,
                         thymestamp = entity.thymestamp,
                         thumbsdownsCount = entity.thumbsdownsCount,
                         thumbsupsCount = entity.thumbsupsCount,

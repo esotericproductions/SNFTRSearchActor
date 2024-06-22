@@ -32,6 +32,9 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
             val filteredThreadsNew =
                 getNewFilteredThreadsOnlyNew(threads, allCachedMappedToUUID)
             if (filteredThreadsNew != null) {
+//                for (entity in allCachedThreads) {
+//                    updateUserLatestProPicFromEntity(entity)
+//                }
                 println("$TAG - executeThreadsSearch().filteredThreadsNew -> ${filteredThreadsNew.size}")
                 for (entity in filteredThreadsNew) {
                     queries.insertThread(
@@ -89,13 +92,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         originator = entity.originatorBlob,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-                        latestProfilePic =
-                        if(entity.originatorBlob.isNotEmpty())
-                            getCachedUserProfilePic(
-                                parseOriginatorBlob(entity.originatorBlob).uid,
-                                snftrDatabase
-                            ) ?: entity.latestProfilePic
-                        else entity.latestProfilePic,
+                        latestProfilePic = entity.latestProfilePic,
                         latestTimestamp = entity.latestTimestamp.toLong(),
                         latestStartTime = entity.latestStartTime.toLong(),
                         latestPauseTime = entity.latestPauseTime.toLong(),
@@ -127,30 +124,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                 } else cacheResult
             for (entity in results) {
                 list.add(
-                    ClockThreadDto(
-                        uuid = entity.uuid,
-                        isTimer = entity.type == 1L,
-                        synced = entity.synced == 1L,
-                        userUid = userUid,
-                        ownerUid = entity.ownerUid,
-                        thymeStamp = entity.thymeStamp.toDouble(),
-                        messages = entity.messages.toInt(),
-                        membersBlob = entity.membersBlob,
-                        members = entity.members.toInt(),
-                        info = entity.info,
-                        name = entity.name,
-                        latestUrl = entity.latestUrl,
-                        latestPostQ = entity.latestPostQ,
-                        latestProfilePic = entity.latestProfilePic,
-                        originatorBlob = entity.originatorBlob,
-                        latestAggTime = entity.latestAggTime.toDouble(),
-                        latestStartTime = entity.latestStartTime.toDouble(),
-                        latestPauseTime = entity.latestPauseTime.toDouble(),
-                        latestTimestamp = entity.latestTimestamp.toDouble(),
-                        latestStopTime = entity.latestStopTime.toDouble(),
-                        startTime = entity.startTime.toDouble(),
-                        event = entity.event.toInt()
-                    )
+                    getUpdatedThreadDto(entity, snftrDatabase)
                 )
             }
             println("$TAG Success! executeCThreadSearch(): ${list.size}")
@@ -160,6 +134,19 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
             emit(DataState.error<List<ClockThreadDto>>(e.message ?: "Unknown Error - message null"))
         }
     }.snftrFlow()
+
+    private fun updateUserLatestProPicFromEntity(entity: ChatThread_Entity) {
+        val blob = parseOriginatorBlob(entity.originatorBlob)
+        if (userIsInDb(blob.uid)) {
+            val userQueries = snftrDatabase.snftrUsersQueries
+            userQueries.updateUserForContentUpdate(
+                name = blob.name,
+                handle = blob.username,
+                profilePic = entity.latestProfilePic,
+                uid = blob.uid
+            )
+        }
+    }
 
     // get only new collections; those not already in the db
     private fun getNewFilteredThreadsOnlyNew(

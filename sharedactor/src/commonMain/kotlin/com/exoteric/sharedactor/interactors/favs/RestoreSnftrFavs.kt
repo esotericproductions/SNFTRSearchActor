@@ -4,7 +4,6 @@ import com.exoteric.sharedactor.datasource.dtos.FavsDto
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
-import com.exoteric.sharedactor.interactors.chat.threads.getCachedUserProfilePic
 import com.exoteric.sharedactor.interactors.flowers.SnftrFavsCacheFlower
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.ITEMS_PER_PG_FVRTS
@@ -41,7 +40,7 @@ class RestoreSnftrFavs(private val snftrDatabase: SnftrDatabase): SnftrFavsCache
                         posterUid = entity.userid,
                         provider = entity.provider,
                         creator = entity.creator,
-                        creatorProfilePic = getCachedUserProfilePic(uid, snftrDatabase) ?: entity.creatorProfilePic,
+                        creatorProfilePic = entity.creatorProfilePic,
                         sourceUrlDetail = entity.source_url_detail,
                         sourceUrlThumb = entity.source_url_thumb,
                         sourceUrlOwner = entity.source_url_owner,
