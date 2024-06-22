@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.flow
 @ExperimentalCoroutinesApi
 class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThreadsFlower {
     override fun executeThreadsSearch(userUid: String,
+                                      isFirstSearch: Boolean,
                                       threads: MutableList<SnftrIDCThreadEntity>?):
             SnftrFlow<DataState<List<ClockThreadDto>>> = flow {
         try {
@@ -75,21 +76,11 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                 getUpdateFilteredThreads(
                     threads,
                     allCachedMappedToUUID,
-                    allCachedThreads
+                    allCachedThreads,
+                    isFirstSearch
                 )
             if (filteredThreadsUpdate != null) {
                 for(entity in filteredThreadsUpdate) {
-                    // update user if in db
-                    val blob = parseOriginatorBlob(entity.originatorBlob)
-                    if (userIsInDb(blob.uid)) {
-                        val userQueries = snftrDatabase.snftrUsersQueries
-                        userQueries.updateUserForContentUpdate(
-                            name = blob.name,
-                            handle = blob.username,
-                            profilePic = entity.latestProfilePic,
-                            uid = blob.uid
-                        )
-                    }
                     queries.updateThreadForThyme(
                         uuid = entity.uuid,
                         event = entity.event.toLong(),
@@ -98,7 +89,13 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         originator = entity.originatorBlob,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-                        latestProfilePic = entity.latestProfilePic,
+                        latestProfilePic =
+                        if(entity.originatorBlob.isNotEmpty())
+                            getCachedUserProfilePic(
+                                parseOriginatorBlob(entity.originatorBlob).uid,
+                                snftrDatabase
+                            ) ?: entity.latestProfilePic
+                        else entity.latestProfilePic,
                         latestTimestamp = entity.latestTimestamp.toLong(),
                         latestStartTime = entity.latestStartTime.toLong(),
                         latestPauseTime = entity.latestPauseTime.toLong(),
@@ -182,9 +179,11 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
     private fun getUpdateFilteredThreads(
         collections: MutableList<SnftrIDCThreadEntity>?,
         allCachedMappedToUUID: List<String>,
-        allCachedThreads: List<ChatThread_Entity>
+        allCachedThreads: List<ChatThread_Entity>,
+        isFirstSearch: Boolean
     ) = collections?.filter { collection ->
-        (collection.uuid in allCachedMappedToUUID)
+        if (isFirstSearch) true
+        else (collection.uuid in allCachedMappedToUUID)
                 && (collection.latestTimestamp.toLong() !in allCachedThreads.map { it.latestTimestamp })
     }
 

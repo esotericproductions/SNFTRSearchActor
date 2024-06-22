@@ -42,6 +42,7 @@ interface ClockThreadsFlower {
     @Throws(Exception::class)
     fun executeThreadsSearch(
         userUid: String,
+        isFirstSearch: Boolean,
         threads: MutableList<SnftrIDCThreadEntity>?):
             SnftrFlow<DataState<List<ClockThreadDto>>>
 }

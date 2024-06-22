@@ -159,7 +159,13 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
                         type = entity.type,
                         threadUid = entity.threadUid,
                         message = entity.message,
-                        latestProPic = entity.latestProPic,
+                        latestProPic =
+                        if(entity.originatorBlob.isNotEmpty())
+                            getCachedUserProfilePic(
+                                parseOriginatorBlob(entity.originatorBlob).uid,
+                                snftrDatabase
+                            ) ?: entity.latestProPic
+                        else entity.latestProPic,
                         messageData = entity.messageData,
                         scoresBlob = entity.scoresBlob,
                         membersBlob = entity.membersBlob,
@@ -190,6 +196,18 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
         if (filteredIDinChatMsgs != null) {
             println("$TAG insertFilteredArray: ${filteredIDinChatMsgs.size}")
             for (entity in filteredIDinChatMsgs) {
+
+//                val blob = parseOriginatorBlob(entity.originatorBlob)
+//                if (userIsInDb(blob.uid)) {
+//                    val userQueries = snftrDatabase.snftrUsersQueries
+//                    userQueries.updateUserForContentUpdate(
+//                        name = blob.name,
+//                        handle = blob.username,
+//                        profilePic = entity.latestProPic,
+//                        uid = blob.uid
+//                    )
+//                }
+
                 queries.insertIDAWNUsrMessage(
                     id = getId(),
                     userUid = entity.userUid,
