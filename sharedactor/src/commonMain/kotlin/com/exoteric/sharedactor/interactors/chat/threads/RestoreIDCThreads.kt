@@ -314,17 +314,15 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         return goToNextPageWithCache
     }
 
-    fun hasCached(type: Long,
-                  userUid: String): Boolean {
+    fun hasCached(userUid: String): Boolean {
         val queries = snftrDatabase.clockThreadQueries
         val numberOfCached = queries
-            .getAllThreadCount(
-                type = type,
+            .selectAll(
                 userUid = userUid
             )
-            .executeAsOne()
-        println("$TAG hasCached(): $numberOfCached")
-        return numberOfCached > 0
+            .executeAsList()
+        println("$TAG hasCached(): ${numberOfCached.size}")
+        return numberOfCached.isNotEmpty()
     }
 
     fun newestCachedTimestamp(type: Long,
