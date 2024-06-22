@@ -53,8 +53,10 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                         latestPostQ = entity.latestPostQ,
                         latestProfilePic =
                         if(entity.originatorBlob.isNotEmpty())
-                            getCachedUserProfilePic(parseOriginatorBlob(entity.originatorBlob).uid, snftrDatabase)
-                                ?: entity.latestProfilePic
+                            getCachedUserProfilePic(
+                                parseOriginatorBlob(entity.originatorBlob).uid,
+                                snftrDatabase
+                            ) ?: entity.latestProfilePic
                         else entity.latestProfilePic,
 //                        latestProfilePic = entity.latestProfilePic,
                         originatorBlob = entity.originatorBlob,

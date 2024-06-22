@@ -135,20 +135,22 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
         // map here since idawnChatMessage_Entity is generated
         val list: ArrayList<ClockIDUsrChatDto> = ArrayList()
         for (entity in cacheResult) {
+            // update user if in db
+            val blob = parseOriginatorBlob(entity.originatorBlob)
+            if (userIsInDb(blob.uid)) {
+                val userQueries = snftrDatabase.snftrUsersQueries
+                userQueries.updateUserForContentUpdate(
+                    name = blob.name,
+                    handle = blob.username,
+                    profilePic = entity.latestProPic,
+                    uid = blob.uid
+                )
+            }
             getUserExpressionsForSnftrDto(
                 uuid = entity.chatUid,
                 userUid = userUid,
                 snftrDatabase = snftrDatabase
             ) {
-//                val cPP = getCachedUserProfilePic(
-//                    parseOriginatorBlob(entity.originatorBlob).uid,
-//                    snftrDatabase
-//                )
-//                val latestProPic =
-//                    if(entity.originatorBlob.isNotEmpty()) {
-//                        cPP ?: entity.latestProPic
-//                    } else entity.latestProPic
-
                 list.add(
                     ClockIDUsrChatDto(
                         userUid = entity.userUid,
@@ -225,6 +227,15 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
                 thumbsupsCount = entity.thumbsupsCount
             )
         }
+    }
+
+    private fun userIsInDb(userUid: String): Boolean {
+        val queries = snftrDatabase.snftrUsersQueries
+        val allFollowing = queries
+            .getFollowingUsers(listOf(userUid))
+            .executeAsList()
+        // only return the list of uid's from users that are not in the db
+        return userUid in allFollowing.map { usr -> usr.uid }
     }
 
     companion object {

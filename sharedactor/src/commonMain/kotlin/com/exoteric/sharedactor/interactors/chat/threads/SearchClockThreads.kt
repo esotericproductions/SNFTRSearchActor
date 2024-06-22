@@ -79,15 +79,17 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                 )
             if (filteredThreadsUpdate != null) {
                 for(entity in filteredThreadsUpdate) {
-                    val cPP = getCachedUserProfilePic(
-                        parseOriginatorBlob(entity.originatorBlob).uid,
-                        snftrDatabase
-                    )
-                    val latestProPic =
-                        if(entity.originatorBlob.isNotEmpty()) {
-                            cPP ?: entity.latestProfilePic
-                        } else entity.latestProfilePic
-
+                    // update user if in db
+                    val blob = parseOriginatorBlob(entity.originatorBlob)
+                    if (userIsInDb(blob.uid)) {
+                        val userQueries = snftrDatabase.snftrUsersQueries
+                        userQueries.updateUserForContentUpdate(
+                            name = blob.name,
+                            handle = blob.username,
+                            profilePic = entity.latestProfilePic,
+                            uid = blob.uid
+                        )
+                    }
                     queries.updateThreadForThyme(
                         uuid = entity.uuid,
                         event = entity.event.toLong(),
@@ -96,7 +98,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         originator = entity.originatorBlob,
                         latestUrl = entity.latestUrl,
                         latestPostQ = entity.latestPostQ,
-                        latestProfilePic = latestProPic,
+                        latestProfilePic = entity.latestProfilePic,
                         latestTimestamp = entity.latestTimestamp.toLong(),
                         latestStartTime = entity.latestStartTime.toLong(),
                         latestPauseTime = entity.latestPauseTime.toLong(),
@@ -184,6 +186,15 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
     ) = collections?.filter { collection ->
         (collection.uuid in allCachedMappedToUUID)
                 && (collection.latestTimestamp.toLong() !in allCachedThreads.map { it.latestTimestamp })
+    }
+
+    private fun userIsInDb(userUid: String): Boolean {
+        val queries = snftrDatabase.snftrUsersQueries
+        val allFollowing = queries
+            .getFollowingUsers(listOf(userUid))
+            .executeAsList()
+        // only return the list of uid's from users that are not in the db
+        return userUid in allFollowing.map { usr -> usr.uid }
     }
 
     companion object {

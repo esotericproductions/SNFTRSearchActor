@@ -290,37 +290,6 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
         } else null
     }
 
-    /**
-     * Used in iOS: SnftrUser.getUserScoresFromNetworkWithFallback() for
-     * putting the user in the db if not existing.  Update for scoresBlob
-     * only--this likely to expand to updated other fields.
-     */
-    fun insertOrUpdateUserForScoresBlob(user: SnftrUserEntity) {
-        // 1. check if user is in db
-        // 2. if not, then insert
-        // 3. if yes then update for scoresBlob only (for now
-        val cached = getCachedUser(user.uid)
-        val query = snftrDatabase.snftrUsersQueries
-        if(cached != null) {
-            query.updateScoresBlobForUser(scoresBlob = user.scoresBlob, uid = user.uid)
-        } else {
-            query.insertUser(
-                id = getId(),
-                uid = user.uid,
-                name = user.name,
-                username = user.username,
-                profilePic = user.profilePic,
-                backgroundPic = user.backgroundPic,
-                email = user.email,
-                favsTime = user.favsTime,
-                cAttsTime = user.cAttsTime,
-                profilesBlob = user.profilesBlob,
-                temperature = user.temperature,
-                pressure = user.pressure,
-                scoresBlob = user.scoresBlob
-            )
-        }
-    }
 
     /**
      * used for quickly checking if user currently has any following items
@@ -442,28 +411,6 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
         }
     }
 
-    /**
-     * Updates the username from logged-in user profile tab.
-     * Called from settings tab inside profile view.
-     */
-    fun updateCachedUserForTempPress(temp: String,
-                                     press: String,
-                                     uid: String,
-                                     completion: (result: Boolean) -> Unit) {
-        val queries = snftrDatabase.snftrUsersQueries
-        queries.updatePressureForUser(pressure = press, uid)
-        queries.updateTemperatureForUser(temperature = temp, uid)
-        val user = queries.searchUsersByUid(uid).executeAsOneOrNull()
-        if (user != null) {
-            val updatedTemp = user.temperature
-            val updatedPress = user.pressure
-            println("$TAG updateCachedUserForTempPress(t: $temp) -> p: $press")
-            completion((updatedTemp == temp && updatedPress == press))
-        } else {
-            println("$TAG FAIL! updateCachedUserForTempPress(t: $temp) -> p: $press")
-            completion(false)
-        }
-    }
 
     fun checkUsersNotInDb(following: List<String>): List<String> {
         val queries = snftrDatabase.snftrUsersQueries

@@ -35,15 +35,6 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
                     userUid = userUid,
                     snftrDatabase = snftrDatabase
                 ) {
-                    val cPP = getCachedUserProfilePic(
-                        parseOriginatorBlob(entity.originatorBlob).uid,
-                        snftrDatabase
-                    )
-                    val latestProPic =
-                        if(entity.originatorBlob.isNotEmpty()) {
-                            cPP ?: entity.latestProPic
-                        } else entity.latestProPic
-
                     list.add(
                         ClockIDUsrChatDto(
                             userUid = entity.userUid,
@@ -52,7 +43,13 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
                             type = entity.type,
                             threadUid = entity.threadUid,
                             message = entity.message,
-                            latestProPic = latestProPic,
+                            latestProPic =
+                            if(entity.originatorBlob.isNotEmpty())
+                                getCachedUserProfilePic(
+                                    parseOriginatorBlob(entity.originatorBlob).uid,
+                                    snftrDatabase
+                                ) ?: entity.latestProPic
+                            else entity.latestProPic,
                             messageData = entity.messageData,
                             scoresBlob = entity.scoresBlob,
                             membersBlob = entity.membersBlob,
