@@ -269,9 +269,11 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
      * Get a cached user via uid.  Primarily used (exclusively?) for current logged in user.
      */
     fun getCachedUser(uid: String): ClockUserDto? {
+//        println("$TAG getCachedUser(): $uid")
         val query = snftrDatabase.snftrUsersQueries
         val user = query.searchUsersByUid(uid = uid).executeAsOneOrNull()
         return if (user != null) {
+//            println("$TAG gotCachedUser(): $uid")
             ClockUserDto(
                 id = user.id.toInt(),
                 uid = user.uid,
