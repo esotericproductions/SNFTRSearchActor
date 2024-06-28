@@ -171,7 +171,9 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
     ) = collections?.filter { collection ->
         if (isFirstSearch) true
         else (collection.uuid in allCachedMappedToUUID)
-                && (collection.latestTimestamp.toLong() !in allCachedThreads.map { it.latestTimestamp })
+                && collection.latestTimestamp.toLong() !in allCachedThreads.map { it.latestTimestamp }
+                || (collection.latestStartTime.toLong() !in allCachedThreads.map { it.latestStartTime }
+                && collection.latestTimestamp.toLong() in allCachedThreads.map { it.latestTimestamp })
     }
 
     private fun userIsInDb(userUid: String): Boolean {

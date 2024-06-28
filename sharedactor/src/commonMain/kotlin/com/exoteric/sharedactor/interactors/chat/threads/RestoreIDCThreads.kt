@@ -185,6 +185,41 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         }
     }
 
+    fun updateCachedThreadForAggTime(
+        latestAggTime: Long,
+        latestStartTime: Long,
+        latestTimestamp: Long,
+        membersBlob: String,
+        members: Long,
+        latestProfilePic: String,
+        originatorBlob: String,
+        event: Long,
+        userUid: String,
+        uuid: String,
+        completion: (result: Boolean) -> Unit
+    ) {
+        val query = snftrDatabase.clockThreadQueries
+        query.updateCachedThreadForAggTime(
+            latestAggTime = latestAggTime,
+            latestStartTime = latestStartTime,
+            latestTimestamp = latestTimestamp,
+            membersBlob = membersBlob,
+            members = members,
+            latestProfilePic = latestProfilePic,
+            originatorBlob = originatorBlob,
+            event = event,
+            userUid = userUid,
+            uuid = uuid
+        )
+        val channel = query.getThreadForUpdateValidation(uuid, userUid).executeAsOneOrNull()
+        if (channel != null) {
+            val updated = latestAggTime == channel.latestAggTime
+            completion(updated)
+        } else {
+            completion(false)
+        }
+    }
+
     fun updateCachedIconDetails(membersBlob: String,
                                 messages: Long,
                                 info: String,
