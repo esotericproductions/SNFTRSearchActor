@@ -77,6 +77,23 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         return null
     }
 
+    fun getCachedThreadForUuid(uuid: String, userUid: String): Boolean {
+        val queries = snftrDatabase.clockThreadQueries
+        val entity = queries.getThreadByUuid(uuid, userUid).executeAsOneOrNull()
+        val synced = if (entity != null) {
+            entity.synced == 1L
+        } else {
+            false
+        }
+        println("$TAG getCachedThreadForUuid(): $synced")
+        return synced
+    }
+
+    fun updateThreadNotSynced(uuid: String, userUid: String) {
+        val queries = snftrDatabase.clockThreadQueries
+        queries.updateThreadSyncStatus(0L, userUid, uuid)
+    }
+
     /**
      * 1. fetch the most recent chat message from the chatsDB for the given threadId
      * 2. parse the chat message data and update the threadsDB with current data
