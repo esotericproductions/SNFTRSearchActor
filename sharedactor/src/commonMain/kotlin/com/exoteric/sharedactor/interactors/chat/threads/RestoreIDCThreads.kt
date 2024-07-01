@@ -77,7 +77,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         return null
     }
 
-    fun getCachedThreadForUuid(uuid: String, userUid: String): Boolean {
+    fun getCachedThreadSyncForUuid(uuid: String, userUid: String): Boolean {
         val queries = snftrDatabase.clockThreadQueries
         val entity = queries.getThreadByUuid(uuid, userUid).executeAsOneOrNull()
         val synced = if (entity != null) {
@@ -85,7 +85,19 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         } else {
             false
         }
-        println("$TAG getCachedThreadForUuid(): $synced")
+        println("$TAG getCachedThreadSyncForUuid(): $synced")
+        return synced
+    }
+
+    fun checkCachedThreadLatestTimeSynced(uuid: String, userUid: String, serverLatestTimestamp: Long): Boolean {
+        val queries = snftrDatabase.clockThreadQueries
+        val entity = queries.getThreadByUuid(uuid, userUid).executeAsOneOrNull()
+        val synced = if (entity != null) {
+            entity.latestTimestamp <= serverLatestTimestamp
+        } else {
+            false
+        }
+        println("$TAG checkCachedThreadLatestTimeSynced(): $synced -> ${entity?.latestTimestamp} <= $serverLatestTimestamp")
         return synced
     }
 
