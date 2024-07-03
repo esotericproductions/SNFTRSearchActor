@@ -98,6 +98,8 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         latestPauseTime = entity.latestPauseTime.toLong(),
                         latestStopTime = entity.latestStopTime.toLong(),
                         latestAggTime = entity.latestAggTime.toLong(),
+                        membersBlob = entity.membersBlob,
+                        members = entity.members.toLong(),
                         userUid = userUid
                     )
                 }
