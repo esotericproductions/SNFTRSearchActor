@@ -490,7 +490,7 @@ fun getUpdatedThreadDto(
         latestPauseTime = entity.latestPauseTime.toDouble(),
         latestStopTime = entity.latestStopTime.toDouble(),
         latestTimestamp = entity.latestTimestamp.toDouble(),
-        startTime = entity.startTime.toDouble(),
+        cloud = entity.cloud == 1L,
         thymeStamp = entity.thymeStamp.toDouble(),
         event = entity.event.toInt(),
         synced = entity.synced == 1L

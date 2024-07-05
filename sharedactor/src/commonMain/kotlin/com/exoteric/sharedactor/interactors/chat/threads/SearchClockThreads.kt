@@ -58,7 +58,7 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                         latestPauseTime = entity.latestPauseTime.toLong(),
                         latestTimestamp = entity.latestTimestamp.toLong(),
                         latestStopTime = entity.latestStopTime.toLong(),
-                        startTime = entity.startTime.toLong(),
+                        cloud = if(entity.cloud) 1L else 0L,
                         thymeStamp = entity.thymeStamp.toLong(),
                         event = entity.event.toLong()
                     )
@@ -170,7 +170,8 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
         allCachedThreads: List<ChatThread_Entity>,
         isFirstSearch: Boolean
     ) = collections?.filter { collection ->
-        if (isFirstSearch) true
+        if (!collection.cloud) false
+        else if (isFirstSearch) true
         else (collection.uuid in allCachedMappedToUUID)
                 && collection.latestTimestamp.toLong() !in allCachedThreads.map { it.latestTimestamp }
                 || (collection.latestStartTime.toLong() !in allCachedThreads.map { it.latestStartTime }

@@ -22,7 +22,7 @@ data class SnftrIDCThreadEntity(
     val latestStartTime: Double,
     val latestPauseTime: Double,
     val latestStopTime: Double,
-    var startTime: Double,
+    var cloud: Boolean,
     val event: Int
 )
 
