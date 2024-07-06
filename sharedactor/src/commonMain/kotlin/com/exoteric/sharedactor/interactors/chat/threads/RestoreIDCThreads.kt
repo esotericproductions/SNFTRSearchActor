@@ -79,7 +79,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
 
     fun getCachedThreadSyncForUuid(uuid: String, userUid: String): Boolean {
         val queries = snftrDatabase.clockThreadQueries
-        val entity = queries.getThreadByUuid(uuid, userUid).executeAsOneOrNull()
+        val entity = queries.getThreadByUuid(uuid = uuid, userUid = userUid).executeAsOneOrNull()
         val synced = if (entity != null) {
             entity.synced == 1L
         } else {
@@ -93,7 +93,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         val queries = snftrDatabase.clockThreadQueries
         val entity = queries.getThreadByUuid(uuid, userUid).executeAsOneOrNull()
         val synced = if (entity != null) {
-            entity.latestTimestamp <= serverLatestTimestamp
+            entity.latestTimestamp < serverLatestTimestamp
         } else {
             false
         }
