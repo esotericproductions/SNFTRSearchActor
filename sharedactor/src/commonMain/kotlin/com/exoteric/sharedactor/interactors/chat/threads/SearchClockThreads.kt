@@ -124,7 +124,6 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
                     cacheResult.filter { it -> it.uuid in filteredThreadsUpdate.map { it.uuid } }
                 } else cacheResult.filter { it -> threads?.map { it.uuid }?.contains(it.uuid) == true }
             for (entity in results) {
-                println("$TAG THREADINSERT --> $entity")
                 list.add(
                     getUpdatedThreadDto(entity, snftrDatabase)
                 )
