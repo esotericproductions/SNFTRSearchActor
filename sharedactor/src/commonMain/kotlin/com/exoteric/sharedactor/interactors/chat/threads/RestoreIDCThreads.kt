@@ -93,11 +93,11 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
         val queries = snftrDatabase.clockThreadQueries
         val entity = queries.getThreadByUuid(uuid, userUid).executeAsOneOrNull()
         val synced = if (entity != null) {
-            entity.latestTimestamp < serverLatestTimestamp
+            entity.latestTimestamp == serverLatestTimestamp
         } else {
             false
         }
-        println("$TAG checkCachedThreadLatestTimeSynced(): $synced -> ${entity?.latestTimestamp} <= $serverLatestTimestamp")
+        println("$TAG checkCachedThreadLatestTimeSynced(): $synced -> ${entity?.latestTimestamp} == $serverLatestTimestamp")
         return synced
     }
 
