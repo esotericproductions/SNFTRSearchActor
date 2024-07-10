@@ -43,6 +43,7 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                     getUpdatedThreadDto(entity, snftrDatabase)
                 )
             }
+            println("$TAG --> fetchCachedThreadsFromDb: emitting -> " + list.size)
             emit(DataState.success(list))
         } catch (e: Exception){ emit(DataState.error<List<ClockThreadDto>>(
             e.message?: "RestoreCThreads: Unknown Error")) }

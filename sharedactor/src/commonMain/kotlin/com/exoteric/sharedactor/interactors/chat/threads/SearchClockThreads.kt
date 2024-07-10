@@ -170,7 +170,8 @@ class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThread
         allCachedThreads: List<ChatThread_Entity>,
         isFirstSearch: Boolean
     ) = collections?.filter { collection ->
-        (collection.uuid in allCachedMappedToUUID)
+        if(isFirstSearch) true
+        else (collection.uuid in allCachedMappedToUUID)
                 && collection.latestTimestamp.toLong() !in allCachedThreads.map { it.latestTimestamp }
                 || (collection.latestStartTime.toLong() !in allCachedThreads.map { it.latestStartTime }
                     && collection.latestTimestamp.toLong() in allCachedThreads.map { it.latestTimestamp })
