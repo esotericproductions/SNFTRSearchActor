@@ -18,6 +18,7 @@ data class ClockUserDto (
     val profilesBlob: String,
     val temperature: String,
     val pressure: String,
-    val scoresBlob: String
+    val scoresBlob: String,
+    val loggedIn: Boolean
 ) : SnftrObject
 

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flow
 class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower {
 
     override fun executeUserSearch(user: SnftrUserEntity):
-            SnftrFlow<DataState<List<ClockUserDto>>> =  flow {
+            SnftrFlow<DataState<List<ClockUserDto>>> = flow {
         try {
             val queries = snftrDatabase.snftrUsersQueries
             emit(DataState.loading())
@@ -36,7 +36,8 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                     profilesBlob = user.profilesBlob,
                     temperature = user.temperature,
                     pressure = user.pressure,
-                    scoresBlob = user.scoresBlob
+                    scoresBlob = user.scoresBlob,
+                    loggedIn = if(user.loggedIn) 1 else 0
                 )
                 println("$TAG insertNewUserIntoCache(): none existing for {user.uid}")
             } else {
@@ -75,7 +76,8 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         profilesBlob = cachedUser.profilesBlob,
                         temperature = cachedUser.temperature,
                         pressure = cachedUser.pressure,
-                        scoresBlob = cachedUser.scoresBlob
+                        scoresBlob = cachedUser.scoresBlob,
+                        loggedIn = cachedUser.loggedIn != 0L
                     )
                 )
             }
@@ -119,7 +121,8 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         profilesBlob = user.profilesBlob,
                         temperature = user.temperature,
                         pressure = user.pressure,
-                        scoresBlob = user.scoresBlob
+                        scoresBlob = user.scoresBlob,
+                        loggedIn = if(user.loggedIn) 1 else 0
                     )
                     println("$TAG insertNewUserIntoCache(): none existing for {user.uid}")
                 }
@@ -176,7 +179,8 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         // TODO: port to firestore.  For now all this to store as string in rtdb.
                         temperature = user.temperature,
                         pressure = user.pressure,
-                        scoresBlob = user.scoresBlob
+                        scoresBlob = user.scoresBlob,
+                        loggedIn = user.loggedIn != 0L
                     )
                 )
             }
@@ -231,7 +235,8 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                             user.uid
                         ),
                         pressure = user.pressure,
-                        scoresBlob = user.scoresBlob
+                        scoresBlob = user.scoresBlob,
+                        loggedIn = user.loggedIn != 0L
                     )
                 )
             }
@@ -287,11 +292,19 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                 profilesBlob = user.profilesBlob,
                 temperature = user.temperature,
                 pressure = user.pressure,
-                scoresBlob = user.scoresBlob
+                scoresBlob = user.scoresBlob,
+                loggedIn = user.loggedIn != 0L
             )
         } else null
     }
 
+    fun fetchLoggedInUID(): String? {
+        val query = snftrDatabase.snftrUsersQueries
+        val user = query.fetchLoggedInUser().executeAsOneOrNull()
+        val uid = user?.uid
+        println("$TAG fetchLoggedInUID() -> $uid")
+        return uid
+    }
 
     /**
      * used for quickly checking if user currently has any following items

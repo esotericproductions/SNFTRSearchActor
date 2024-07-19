@@ -13,11 +13,12 @@ data class SnftrUserEntity(
     val profilesBlob: String,
     val temperature: String,
     val pressure: String,
-    val scoresBlob: String
+    val scoresBlob: String,
+    val loggedIn: Boolean
 ) {
     companion object {
 
-        fun fromMap(map: Map<String, Any>): SnftrUserEntity {
+        fun fromMap(map: Map<String, Any>, loggedIn: Boolean): SnftrUserEntity {
             return SnftrUserEntity(
                 name = map["name"] as String,
                 profilePic = map["profilePic"] as String,
@@ -30,7 +31,8 @@ data class SnftrUserEntity(
                 uid = map["uid"] as String,
                 email = map["email"] as String,
                 favsTime = (map["favoriteTime"] as? Long) ?: 0L, // Providing default value if null
-                cAttsTime = (map["cAttsTime"] as? Long) ?: 0L // Providing default value if null
+                cAttsTime = (map["cAttsTime"] as? Long) ?: 0L, // Providing default value if null,
+                loggedIn = loggedIn
             )
         }
     }

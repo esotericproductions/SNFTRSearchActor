@@ -19,7 +19,8 @@ class SnftrUserDtoMapper : DomainMapper<SnftrUserEntity, ClockUserDto> {
             profilesBlob = model.profilesBlob,
             temperature = model.temperature,
             pressure = model.pressure,
-            scoresBlob = model.scoresBlob
+            scoresBlob = model.scoresBlob,
+            loggedIn = model.loggedIn
         )
     }
 
@@ -36,7 +37,8 @@ class SnftrUserDtoMapper : DomainMapper<SnftrUserEntity, ClockUserDto> {
             profilesBlob = domainModel.profilesBlob,
             temperature = domainModel.temperature,
             pressure = domainModel.pressure,
-            scoresBlob = domainModel.scoresBlob
+            scoresBlob = domainModel.scoresBlob,
+            loggedIn = domainModel.loggedIn
         )
     }
 

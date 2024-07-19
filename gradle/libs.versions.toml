@@ -2,7 +2,7 @@
 agp = "8.2.2"
 kotlin = "2.0.0"
 snftr-searchLib = "1.2.32"
-snftr-dbLib = "1.2.15"
+snftr-dbLib = "1.2.16"
 coroutines= "1.7.3"
 ktor = "2.3.9"
 kotlinx-json = "1.5.1"
