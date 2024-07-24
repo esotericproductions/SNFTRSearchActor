@@ -87,6 +87,11 @@ interface SnftrUserFlower {
     fun executeUserRestoredSearch(users: MutableList<SnftrUserEntity>?,
                                   currentUid: String):
             SnftrFlow<DataState<List<ClockUserDto>>>
+
+    @Throws(Exception::class)
+    fun executeNewUsersSearch(users: MutableList<SnftrUserEntity>?,
+                              currentUid: String):
+            SnftrFlow<DataState<List<ClockUserDto>>>
 }
 
 

@@ -72,7 +72,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         profilePic = cachedUser.profilePic,
                         backgroundPic = cachedUser.backgroundPic,
                         favsTime = cachedUser.favsTime,
-                        cAttsTime = user.cAttsTime,
+                        cAttsTime = cachedUser.cAttsTime,
                         profilesBlob = cachedUser.profilesBlob,
                         temperature = cachedUser.temperature,
                         pressure = cachedUser.pressure,
@@ -133,13 +133,87 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                 return@flow
             }
             val following = profilesBlobFollowing.map { item -> item.uid }
-            emit(DataState.loading())
             val allFollowing = queries
                 .getFollowingUsers(following)
                 .executeAsList()
             emitAllFollowingForCurrentUser(allFollowing, currentUser)
         } catch (e: Exception) {
             emit(DataState.error<List<ClockUserDto>>(e.message ?: "Unknown Error - message null"))
+        }
+    }.snftrFlow()
+
+
+    override fun executeNewUsersSearch(users: MutableList<SnftrUserEntity>?,
+                                       currentUid: String):
+            SnftrFlow<DataState<List<ClockUserDto>>> =  flow {
+        try {
+            val queries = snftrDatabase.snftrUsersQueries
+            emit(DataState.loading())
+            val allCachedUsers = queries
+                .selectAll()
+                .executeAsList()
+
+            val filteredUsers =
+                users?.distinct()?.filter { fp ->
+                    fp.uid !in allCachedUsers.map { it.uid } && fp.uid != currentUid
+                }
+
+            println("$TAG executeNewUsersSearch(): existing: ${allCachedUsers.size} " +
+                    "--- adding: ${filteredUsers?.size}")
+            if (filteredUsers != null) {
+                for (user in filteredUsers) {
+                    queries.insertUser(
+                        id = getId(),
+                        uid = user.uid,
+                        name = user.name,
+                        username = user.username,
+                        profilePic = user.profilePic,
+                        backgroundPic = user.backgroundPic,
+                        email = user.email,
+                        favsTime = user.favsTime,
+                        cAttsTime = user.cAttsTime,
+                        profilesBlob = user.profilesBlob,
+                        temperature = user.temperature,
+                        pressure = user.pressure,
+                        scoresBlob = user.scoresBlob,
+                        loggedIn = if(user.loggedIn) 1 else 0
+                    )
+                }
+            }
+            val updatedALlCachedUsers = queries
+                .selectAll()
+                .executeAsList()
+            val list = arrayListOf<ClockUserDto>()
+            if (updatedALlCachedUsers.isNotEmpty()) {
+                // don't return the currentUser in search results
+                for (cachedUser in updatedALlCachedUsers.filter { it.uid != currentUid }) {
+                    list.add(
+                        ClockUserDto(
+                            id = cachedUser.id.toInt(),
+                            uid = cachedUser.uid,
+                            name = cachedUser.name,
+                            email = cachedUser.email,
+                            username = cachedUser.username,
+                            profilePic = cachedUser.profilePic,
+                            backgroundPic = cachedUser.backgroundPic,
+                            favsTime = cachedUser.favsTime,
+                            cAttsTime = cachedUser.cAttsTime,
+                            profilesBlob = cachedUser.profilesBlob,
+                            temperature = cachedUser.temperature,
+                            pressure = cachedUser.pressure,
+                            scoresBlob = cachedUser.scoresBlob,
+                            loggedIn = cachedUser.loggedIn != 0L
+                        )
+                    )
+                }
+            }
+            println("$TAG Success! executeNewUsersSearch(): ${list.size}")
+            // emit List<SnftrUserDto> from cache
+            emit(DataState.success(list))
+        } catch (e: Exception) {
+            emit(DataState.error<List<ClockUserDto>>(e.message ?:
+                "executeNewUsersSearch: Unknown Error - message null")
+            )
         }
     }.snftrFlow()
 
@@ -436,7 +510,66 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
         return following.filter{ str -> str !in allFollowing.map { usr -> usr.uid } }
     }
 
+    fun setCurrentProfiledUid(uid: String) {
+        val queries = snftrDatabase.snftrSettingsQueries
+        val mostRecentP = queries
+            .getSettingByKey(key = CURRENT_PROFILE_UID)
+            .executeAsOneOrNull()
+        if (mostRecentP == null) {
+            println("$TAG setCurrentProfiledUid():")
+            queries.insertSettings(
+                category = PROFILE_UID,
+                key = CURRENT_PROFILE_UID,
+                value_ = uid,
+                thymestamp = 0
+            )
+        } else {
+            println("$TAG setCurrentProfiledUid(): UPDATING")
+            queries.updateSettings(
+                key = CURRENT_PROFILE_UID,
+                value_ = uid
+            )
+        }
+    }
+
+
+    fun fetchCurrentProfiledUserId(): String? {
+        val queries = snftrDatabase.snftrSettingsQueries
+        val mostRecentP = queries
+            .getSettingByKey(key = CURRENT_PROFILE_UID)
+            .executeAsOneOrNull()
+
+        mostRecentP?.let {
+            println("$TAG fetchCurrentProfiledUserId(): got CURRENT_PROFILE_UID")
+            it.value_
+            return it.value_
+        } ?: run {
+            println("$TAG fetchCurrentProfiledUserId(): NULL CURRENT_PROFILE_UID")
+            return null
+        }
+    }
+
+    fun fetchCurrentProfiledUser(): ClockUserDto? {
+        val queries = snftrDatabase.snftrSettingsQueries
+        val mostRecentP = queries
+            .getSettingByKey(key = CURRENT_PROFILE_UID)
+            .executeAsOneOrNull()
+
+        mostRecentP?.let {
+            println("$TAG fetchCurrentProfiledUser(): got CURRENT_PROFILE_UID")
+            it.value_
+            return getCachedUser(it.value_)
+        } ?: run {
+            println("$TAG fetchCurrentProfiledUser(): NULL CURRENT_PROFILE_UID")
+
+            return null
+        }
+    }
+
     companion object {
         const val TAG = "SearchSnftrUser"
+        const val PROFILE_UID = "profileuid"
+
+        const val CURRENT_PROFILE_UID = "currentprofileuid"
     }
 }
