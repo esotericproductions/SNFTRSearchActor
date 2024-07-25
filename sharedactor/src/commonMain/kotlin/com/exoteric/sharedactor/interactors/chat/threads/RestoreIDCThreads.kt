@@ -9,14 +9,13 @@ import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.ClockThreadsCacheFlower
+import com.exoteric.sharedactor.interactors.parseOriginatorBlob
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.ITEMS_PER_PG_PROVIDER_SEARCH
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 
 /**
@@ -440,18 +439,6 @@ fun getCachedUserProfilePic(uid: String, snftrDatabase: SnftrDatabase): String? 
         null
     }
 }
-
-data class OriginatorBlob(val username: String, val name: String, val uid: String)
-
-fun parseOriginatorBlob(jsonString: String): OriginatorBlob {
-    val json = Json
-    val jsonTree = json.parseToJsonElement(jsonString)
-    val username = jsonTree.jsonObject["username"]?.jsonPrimitive?.content ?: ""
-    val name = jsonTree.jsonObject["name"]?.jsonPrimitive?.content ?: ""
-    val uid = jsonTree.jsonObject["uid"]?.jsonPrimitive?.content ?: ""
-    return OriginatorBlob(username, name, uid)
-}
-
 
 fun getUpdatedThreadDto(
     entity: ChatThread_Entity,
