@@ -16,10 +16,11 @@ import kotlinx.coroutines.flow.flow
 
 @ExperimentalCoroutinesApi
 class SearchClockThreads(private val snftrDatabase: SnftrDatabase) : ClockThreadsFlower {
-    override fun executeThreadsSearch(userUid: String,
-                                      isFirstSearch: Boolean,
-                                      threads: MutableList<SnftrIDCThreadEntity>?):
-            SnftrFlow<DataState<List<ClockThreadDto>>> = flow {
+    override fun executeThreadsSearch(
+        userUid: String,
+        isFirstSearch: Boolean,
+        threads: MutableList<SnftrIDCThreadEntity>?
+    ): SnftrFlow<DataState<List<ClockThreadDto>>> = flow {
         try {
             emit(DataState.loading())
             val queries = snftrDatabase.clockThreadQueries

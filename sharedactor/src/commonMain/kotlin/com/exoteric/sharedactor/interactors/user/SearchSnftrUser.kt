@@ -538,7 +538,6 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
         val mostRecentP = queries
             .getSettingByKey(key = CURRENT_PROFILE_UID)
             .executeAsOneOrNull()
-
         mostRecentP?.let {
             println("$TAG fetchCurrentProfiledUserId(): got CURRENT_PROFILE_UID")
             it.value_
