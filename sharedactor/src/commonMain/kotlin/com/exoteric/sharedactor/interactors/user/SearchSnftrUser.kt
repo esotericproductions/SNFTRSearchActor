@@ -258,7 +258,18 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                     )
                 )
             }
-            emit(DataState.success(list))
+
+            getCachedUser(currentUid)?.let {
+                list
+                .sortedWith(compareByDescending<ClockUserDto> { dto ->
+                    parseProfilesBlobFollowing(it.profilesBlob)?.map { it.uid }?.contains(dto.uid)
+                }.thenByDescending {
+                    it.username
+                })
+                emit(DataState.success(list))
+            } ?: run {
+                emit(DataState.success(list))
+            }
         } catch (e: Exception) {
             emit(DataState.error<List<ClockUserDto>>(e.message ?: "Unknown Error - message null"))
         }

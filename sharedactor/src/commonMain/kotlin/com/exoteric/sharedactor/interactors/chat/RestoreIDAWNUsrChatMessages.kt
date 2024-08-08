@@ -290,10 +290,10 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
         return oldest
     }
 
-    fun getIDUsrChatMsgCount(channelUid: String, uid: String): Int {
+    fun getIDUsrChatMsgCount(channelUid: String, uid: String): Long {
         val count = snftrDatabase.clockChatMessagesQueries
             .getAllIDAWNMessagesCountForUser(userUid = uid, threadUid = channelUid)
-            .executeAsList().size
+            .executeAsOneOrNull() ?: 0L
         println("$TAG getIDUsrChatMsgCount() -> $count")
         return count
     }
