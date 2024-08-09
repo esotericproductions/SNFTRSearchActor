@@ -1,8 +1,11 @@
 package com.exoteric.sharedactor.interactors
 
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
 
 
 data class OriginatorBlob(val username: String, val name: String, val uid: String)
@@ -43,4 +46,17 @@ fun parseChatMediaBlob(jsonString: String): SupplementalChatMedia {
         mediaDetail = mediaDetail,
         mediaOwnerUrl = mediaOwnerUrl
     )
+}
+
+fun chatMediaToJson(supplementalChatMedia: SupplementalChatMedia): String {
+    val json = Json
+    val jsonObject = buildJsonObject {
+        put("chatUuid", supplementalChatMedia.chatUuid)
+        put("threadUuid", supplementalChatMedia.threadUuid)
+        put("mediaProvider", supplementalChatMedia.mediaProvider)
+        put("mediaThumb", supplementalChatMedia.mediaThumb)
+        put("mediaDetail", supplementalChatMedia.mediaDetail)
+        put("mediaOwnerUrl", supplementalChatMedia.mediaOwnerUrl)
+    }
+    return json.encodeToString(JsonObject.serializer(), jsonObject)
 }
