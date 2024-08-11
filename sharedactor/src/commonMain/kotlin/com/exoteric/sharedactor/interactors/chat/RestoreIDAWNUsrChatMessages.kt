@@ -339,8 +339,8 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
         if (entity != null) {
             println("insertSnftrCmmtExpressions():" +
                     " this expressions row already exists for ($chatUuid) & user -> $userUid! ----> d: ${entity.thumbsdowns} u: ${entity.thumbsups}")
-            query.updateCmmtThumbsUPForUserUid(tUp, chatUuid, userUid)
-            query.updateCmmtThumbsDOWNForUserUid(tUp, chatUuid, userUid)
+//            query.updateCmmtThumbsUPForUserUid(tUp, chatUuid, userUid)
+//            query.updateCmmtThumbsDOWNForUserUid(tUp, chatUuid, userUid)
             myCallback(false)
             return
         }
