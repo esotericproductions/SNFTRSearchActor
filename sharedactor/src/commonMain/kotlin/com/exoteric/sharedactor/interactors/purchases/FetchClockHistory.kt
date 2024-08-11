@@ -41,6 +41,7 @@ class FetchClockEventHistory(private val snftrDatabase: SnftrDatabase) :
                         name = entity.name,
                         username = entity.username,
                         profilePic = entity.profilePic,
+                        statusBlob = "", // placeholder
                         status = entity.status,
                         thymestamp = entity.thymestamp
                     )

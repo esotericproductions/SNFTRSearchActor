@@ -397,15 +397,15 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
                     "uh oh the comment is not in the db!")
             return
         }
-        if (thumbsdowns == 1L) {
-            println("updateSnftrChatSingleForThumbsdowns(chatUuid): " +
-                    "incrCommentThumbsdowns")
-            queryComments.incrChatThumbsdowns(chatUid = chatUuid)
-        } else if (thumbsdowns == 0L) {
-            println("updateSnftrChatSingleForThumbsdowns(chatUuid): " +
-                    "decrCommentThumbsdowns")
-            queryComments.incrChatThumbsdowns(chatUid = chatUuid)
-        }
+//        if (thumbsdowns == 1L) {
+//            println("updateSnftrChatSingleForThumbsdowns(chatUuid): " +
+//                    "incrCommentThumbsdowns")
+//            queryComments.incrChatThumbsdowns(chatUid = chatUuid)
+//        } else if (thumbsdowns == 0L) {
+//            println("updateSnftrChatSingleForThumbsdowns(chatUuid): " +
+//                    "decrCommentThumbsdowns")
+//            queryComments.incrChatThumbsdowns(chatUid = chatUuid)
+//        }
         val query = snftrDatabase.snftrUserExpressionsQueries
         val expr = query
             .getCmmtUserExpressionsForUserUid(chatUuid, userUid)
