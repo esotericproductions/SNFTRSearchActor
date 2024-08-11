@@ -1,6 +1,7 @@
 package com.exoteric.sharedactor.interactors.expressions
 
 import com.exoteric.snftrdblib.cached.SnftrDatabase
+import kotlin.math.exp
 
 
 // used internally in the CommentsFlowers
@@ -24,9 +25,9 @@ fun getUserExpressionsForSnftrDto(uuid: String,
                                   myCallback: (entity: SnftrUserExpressions) -> Unit) {
     val query = snftrDatabase.snftrUserExpressionsQueries
     val expr = query.getCmmtUserExpressionsForUserUid(uuid, userUid).executeAsOneOrNull()
-//    if (expr != null) {
-//        println("getUserExpressionsForComment(): user has expressions for comment!")
-//    }
+    if (expr != null) {
+        println("getUserExpressionsForComment($uuid): user has expressions for comment! d: ${expr.thumbsdowns} u: ${expr.thumbsups}")
+    }
     myCallback(
         SnftrUserExpressions(
             fav = expr?.isFav ?: 0,

@@ -332,15 +332,19 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
         userUid: String,
         myCallback: (updated: Boolean) -> Unit) {
         val query = snftrDatabase.snftrUserExpressionsQueries
-        val entity = query.getCmmtUserExpressionsForUserUid(cmmtUuid = chatUuid,
-            userUid = userUid).executeAsOneOrNull()
+        val entity = query.getCmmtUserExpressionsForUserUid(
+            cmmtUuid = chatUuid,
+            userUid = userUid
+        ).executeAsOneOrNull()
         if (entity != null) {
-//            println("insertSnftrCmmtExpressions():" +
-//                    " this expressions row already exists for ($cmmtUuid) & user -> $userUid!")
+            println("insertSnftrCmmtExpressions():" +
+                    " this expressions row already exists for ($chatUuid) & user -> $userUid! ----> d: ${entity.thumbsdowns} u: ${entity.thumbsups}")
+            query.updateCmmtThumbsUPForUserUid(tUp, chatUuid, userUid)
+            query.updateCmmtThumbsDOWNForUserUid(tUp, chatUuid, userUid)
             myCallback(false)
             return
         }
-//        println("insertSnftrChatExpressions($chatUuid): inserting for -> $userUid")
+        println("insertSnftrChatExpressions($chatUuid): inserting for -> $userUid")
         query.insertUserExpressions(
             id = getId(),
             uuid = chatUuid,
@@ -353,7 +357,7 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
         val updatedExpr = query
             .getCmmtUserExpressionsForUserUid(chatUuid, userUid)
             .executeAsOneOrNull()
-        myCallback(updatedExpr != null && updatedExpr.isFav == isFav)
+        myCallback(updatedExpr != null && updatedExpr.isFav == isFav && updatedExpr.thumbsups == tUp && updatedExpr.thumbsdowns == tDown)
     }
 
     fun updateSnftrChatSingleForThumbsups(thumbsups: Long,
