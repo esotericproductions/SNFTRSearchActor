@@ -10,6 +10,7 @@ import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.interactors.chat.threads.createOriginatorBlob
 import com.exoteric.sharedactor.interactors.chat.threads.getCachedUserData
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
+import com.exoteric.sharedactor.interactors.favs.setUpdatedUserFavTime
 import com.exoteric.sharedactor.interactors.flowers.IDAWNUsrChatMsgCacheFlower
 import com.exoteric.sharedactor.interactors.parseOriginatorBlob
 import com.exoteric.snftrdblib.cached.SnftrDatabase
@@ -40,11 +41,6 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
                         entityUsername = blob.username,
                         snftrDatabase
                     )
-                val newBlob = createOriginatorBlob(
-                    name = latestUserData.name,
-                    username = latestUserData.username,
-                    uid = blob.uid
-                )
                 getUserExpressionsForSnftrDto(
                     uuid = entity.chatUid,
                     userUid = userUid,
@@ -62,7 +58,11 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
                             messageData = entity.messageData,
                             scoresBlob = entity.scoresBlob,
                             membersBlob = entity.membersBlob,
-                            originatorBlob = newBlob,
+                            originatorBlob = createOriginatorBlob(
+                                name = latestUserData.name,
+                                username = latestUserData.username,
+                                uid = blob.uid
+                            ),
                             thymestamp = entity.thymestamp,
                             thumbsdownsCount = entity.thumbsdownsCount,
                             thumbsupsCount = entity.thumbsupsCount,
@@ -212,11 +212,13 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
      * User has added or removed a thumbsup or thumbsdown.  Update the db,
      * assert change is valid, reply in callback.
      */
-    fun updateIDUsrChatThumbs(userUid: String,
-                              chatUid: String,
-                              isTUp: Boolean,
-                              incremented: Boolean,
-                              callback: (updated: Boolean) -> Unit) {
+    fun updateIDUsrChatThumbs(
+        userUid: String,
+        chatUid: String,
+        isTUp: Boolean,
+        incremented: Boolean,
+        callback: (updated: Boolean) -> Unit
+    ) {
         val query = snftrDatabase.clockChatMessagesQueries
         val cached = query.searchIDAWNMessageByChatUid(
             userUid = userUid,
@@ -538,6 +540,7 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
                 flagged = 0
             )
         }
+        setUpdatedUserFavTime(userUid, snftrDatabase)
         val updatedExpr = query.getCmmtUserExpressionsForUserUid(chatUuid, userUid).executeAsOneOrNull()
         myCallback(updatedExpr != null && updatedExpr.isFav == isFav)
     }

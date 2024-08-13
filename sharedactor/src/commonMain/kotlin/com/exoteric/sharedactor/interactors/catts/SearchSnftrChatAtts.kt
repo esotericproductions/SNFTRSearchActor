@@ -5,7 +5,10 @@ import com.exoteric.sharedactor.datasource.dtos.ClockChatAttsDto
 import com.exoteric.sharedactor.domain.data.DataState
 import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
+import com.exoteric.sharedactor.interactors.favs.SearchSnftrFavorites
+import com.exoteric.sharedactor.interactors.favs.setUpdatedUserFavTime
 import com.exoteric.sharedactor.interactors.flowers.SnftrChatAttsFlower
+import com.exoteric.sharedactor.interactors.user.SearchSnftrUser
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.ITEMS_PER_PG_FVRTS
 import com.exoteric.snftrsearchlibr.getId
@@ -35,7 +38,7 @@ class SearchSnftrChatAtts(private val snftrDatabase: SnftrDatabase) : SnftrChatA
             val queries = snftrDatabase.clockChatAttsHistoryQueries
             // filter out any duplicate urls before putting into cache
             val allCachedCAtts = queries.selectAllForUserId(posterUid = uid).executeAsList()
-
+            setUpdatedUserCAttsTime(uid, snftrDatabase)
             // 1. check the db for any rows where urlThumb == source_url_thumb
             // 2. filter out any duplicates
             val filteredCAtts =
@@ -110,6 +113,7 @@ class SearchSnftrChatAtts(private val snftrDatabase: SnftrDatabase) : SnftrChatA
                 random_seed = (1..3201).random().toLong(),
                 thymeStamp = entity.thymeStamp
             )
+            setUpdatedUserCAttsTime(entity.posterUid, snftrDatabase)
             val check = query.getChatAttByUuid(chatUid = entity.chatUid).executeAsOneOrNull()
             val wasItAdded = check?.chatUid == entity.chatUid
             println("$TAG addSnftrCAttSingle(): for entity with time: ${entity.thymeStamp} -- added? $wasItAdded")
@@ -117,7 +121,46 @@ class SearchSnftrChatAtts(private val snftrDatabase: SnftrDatabase) : SnftrChatA
         }
     }
 
+    fun updateUserCAttsTime(uid: String, cAttsTime: Long, completion: (updated: Boolean) -> Unit) {
+        println("$TAG updateUserCAttsTime():")
+        val queries = snftrDatabase.snftrUsersQueries
+        queries.updateUserForCAttsThyme(cAttsTime, uid)
+        val user = queries.searchUsersByUid(uid).executeAsOneOrNull()
+        if (user != null) {
+            val updatedCAttsTime = user.cAttsTime
+            println("$TAG updateUserCAttsTime() -> updated cAttsTime!")
+            val updated = updatedCAttsTime == cAttsTime
+            if (updated) setUpdatedUserCAttsTime(uid, snftrDatabase)
+            completion(updated)
+        } else {
+            println("$TAG updateUserCAttsTime(): update failed!")
+            completion(false)
+        }
+    }
+
     companion object {
-        const val TAG = "SearchSnftrChatAtts"
+        const val TAG = "SearchChatAtts"
+    }
+}
+
+
+fun setUpdatedUserCAttsTime(uid: String, snftrDatabase: SnftrDatabase) {
+    val userQ = snftrDatabase.snftrUsersQueries
+    val newestIncoming = (userQ
+        .searchUsersByUid(uid = uid)
+        .executeAsOneOrNull()?.cAttsTime ?: -1) / 1000
+    if (newestIncoming > 0) {
+        // update its local copy if valid
+        val query = snftrDatabase.clockChatAttsHistoryQueries
+        val latestLocal = query
+            .getNewest(posterUid = uid)
+            .executeAsOneOrNull()
+        if (latestLocal != null) {
+            query.updateNewest(
+                chatUid = latestLocal.chatUid,
+                posterUid = uid,
+                timestamp = newestIncoming
+            )
+        }
     }
 }

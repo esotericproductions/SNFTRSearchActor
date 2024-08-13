@@ -45,6 +45,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                     // these are the details to be updated when
                     // loading an external user's profile
                     favsTime = user.favsTime,
+                    cAttsTime = user.cAttsTime,
                     name = user.name,
                     handle = user.username,
                     scoresBlob = user.scoresBlob,
@@ -52,7 +53,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                     backgroundPic = user.backgroundPic,
                     profilesBlob = user.profilesBlob,
                     // for this user
-                    user.uid
+                    uid = user.uid
                 )
                 println("$TAG updateExistingUserDetails for {user.uid}")
             }

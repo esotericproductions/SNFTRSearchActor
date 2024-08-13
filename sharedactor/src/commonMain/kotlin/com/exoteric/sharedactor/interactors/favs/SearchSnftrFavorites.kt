@@ -7,6 +7,7 @@ import com.exoteric.sharedactor.domain.util.SnftrFlow
 import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.interactors.flowers.SnftrFavsFlower
 import com.exoteric.sharedactor.interactors.search.RestoreSnftrs
+import com.exoteric.sharedactor.interactors.user.SearchSnftrUser
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.ITEMS_PER_PG_FVRTS
 import com.exoteric.snftrsearchlibr.getId
@@ -36,24 +37,7 @@ class SearchSnftrFavorites(private val snftrDatabase: SnftrDatabase) : SnftrFavs
             // is larger/newer than the local timestamp, update it so
             // future calls to fetchOverCache() will keep checking the
             // network unnecessarily.
-            val userQ = snftrDatabase.snftrUsersQueries
-            val newestIncoming = (userQ
-                .searchUsersByUid(uid = uid)
-                .executeAsOneOrNull()?.favsTime ?: -1) / 1000
-            if(newestIncoming > 0) {
-                // update its local copy if valid
-                val query = snftrDatabase.snftrFavoritesQueries
-                val latestLocal = query
-                    .getNewest(userid = uid)
-                    .executeAsOneOrNull()
-                if (latestLocal != null) {
-                    query.updateNewest(
-                        userid = latestLocal.userid,
-                        timestamp = newestIncoming,
-                        uuid = latestLocal.uuid
-                    )
-                }
-            }
+            setUpdatedUserFavTime(uid, snftrDatabase)
             // 1. check the db for any rows where urlThumb == source_url_thumb
             // 2. filter out any duplicates
             val filteredFavs =
@@ -148,7 +132,45 @@ class SearchSnftrFavorites(private val snftrDatabase: SnftrDatabase) : SnftrFavs
         }
     }
 
+    fun updateUserFavsTime(uid: String, favsTime: Long, completion: (updated: Boolean) -> Unit) {
+        println("$TAG updateUserFavsTime():")
+        val queries = snftrDatabase.snftrUsersQueries
+        queries.updateUserForFavsThyme(favsTime, uid)
+        val user = queries.searchUsersByUid(uid).executeAsOneOrNull()
+        if (user != null) {
+            val updatedFavsTime = user.favsTime
+            println("${SearchSnftrUser.TAG} updateUserFavsTime() -> updatedBlob!")
+            val updated = updatedFavsTime == favsTime
+            if (updated) setUpdatedUserFavTime(uid, snftrDatabase)
+            completion(updated)
+        } else {
+            println("${SearchSnftrUser.TAG} updateUserFavsTime(): update failed!")
+            completion(false)
+        }
+    }
+
     companion object {
         const val TAG = "SearchSnftrFavs"
+    }
+}
+
+fun setUpdatedUserFavTime(uid: String, snftrDatabase: SnftrDatabase) {
+    val userQ = snftrDatabase.snftrUsersQueries
+    val newestIncoming = (userQ
+        .searchUsersByUid(uid = uid)
+        .executeAsOneOrNull()?.favsTime ?: -1) / 1000
+    if (newestIncoming > 0) {
+        // update its local copy if valid
+        val query = snftrDatabase.snftrFavoritesQueries
+        val latestLocal = query
+            .getNewest(userid = uid)
+            .executeAsOneOrNull()
+        if (latestLocal != null) {
+            query.updateNewest(
+                userid = latestLocal.userid,
+                timestamp = newestIncoming,
+                uuid = latestLocal.uuid
+            )
+        }
     }
 }
