@@ -273,6 +273,54 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : ID
         callback(wasItUpdated)
     }
 
+    fun checkNewestCachedLatestPostQ(
+        channelUid: String,
+        uid: String,
+        latestPostQ: String
+    ): Boolean {
+        if (latestPostQ.isEmpty()) return false
+        snftrDatabase.clockChatMessagesQueries
+            .searchIDAWNMessageByMessage(userUid = uid, threadUid = channelUid, message = latestPostQ)
+            .executeAsOneOrNull()?.let { msg ->
+                val newestMsg = msg.message
+                println("$TAG checkNewestCachedLatestPostQ(uuid): $newestMsg")
+                val newestPostQ = if (newestMsg.length > 150) {
+                    newestMsg.substring(0, 150)
+                } else {
+                    newestMsg
+                }
+                println("$TAG checkNewestCachedLatestPostQ(uuid): lpq: $newestPostQ")
+
+                return newestPostQ != latestPostQ
+            } ?:
+        println("$TAG checkNewestCachedLatestPostQ(uuid): no msg row in db!")
+        return true
+    }
+
+
+    fun checkNewestCachedLatestPostQA(
+        channelUid: String,
+        uid: String,
+        latestPostQ: String
+    ): Boolean {
+        if (latestPostQ.isEmpty()) return false
+        snftrDatabase.clockChatMessagesQueries
+            .getNewest(threadUid = channelUid, uid = uid)
+            .executeAsOneOrNull()?.let { msg ->
+                val newestMsg = msg.message
+                println("$TAG checkNewestCachedLatestPostQA(uuid): $newestMsg")
+                val newestPostQ = if (newestMsg.length > 150) {
+                    newestMsg.substring(0, 150)
+                } else {
+                    newestMsg
+                }
+                println("$TAG checkNewestCachedLatestPostQA(uuid): lpq: $newestPostQ")
+
+                return newestPostQ != latestPostQ
+            } ?:
+        println("$TAG checkNewestCachedLatestPostQA(uuid): no msg row in db!")
+        return true
+    }
 
     fun newestCachedTimestamp(channelUid: String, uid: String): Long {
         val newest = snftrDatabase.clockChatMessagesQueries

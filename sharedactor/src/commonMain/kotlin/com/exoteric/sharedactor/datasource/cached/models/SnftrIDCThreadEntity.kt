@@ -29,6 +29,7 @@ data class SnftrIDCThreadEntity(
 data class IDCThreadIconDetails(
     val membersBlob: String,
     val messages: Int,
+    val latestPostQ: String,
     val info: String,
     val ownerUid: String,
     val name: String

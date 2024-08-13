@@ -204,13 +204,14 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                 IDCThreadIconDetails(
                     membersBlob = channel.membersBlob,
                     messages = channel.messages.toInt(),
+                    latestPostQ = channel.latestPostQ,
                     info = channel.info,
                     ownerUid = channel.ownerUid,
                     name = channel.name
                 )
             )
         } else {
-            completion(IDCThreadIconDetails("",0, "", "", "")) // just send an empty obj as response
+            completion(IDCThreadIconDetails("",0, "", "", "", "")) // just send an empty obj as response
         }
     }
 
@@ -249,22 +250,28 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
 
     fun updateCachedIconDetails(membersBlob: String,
                                 messages: Long,
+                                latestPostQ: String,
                                 info: String,
+                                name: String,
                                 uuid: String,
                                 userUid: String,
                                 completion: (result: Boolean) -> Unit) {
 //        println("updateCachedIconDetails(): $membersBlob")
         val query = snftrDatabase.clockThreadQueries
-        val channel0 = query.getThreadForUpdateValidation(uuid, userUid).executeAsOneOrNull()
+        val channel0 =
+            query.getThreadForUpdateValidation(uuid, userUid).executeAsOneOrNull()
         if (channel0 != null && channel0.uuid == uuid) {
             query.updateThreadForIconDetails(
                 membersBlob = membersBlob,
                 messages = messages,
+                latestPostQ = latestPostQ,
                 info = info,
+                name = name,
                 uuid = uuid,
                 userUid = userUid
             )
-            val channel = query.getThreadForUpdateValidation(uuid, userUid).executeAsOneOrNull()
+            val channel =
+                query.getThreadForUpdateValidation(uuid, userUid).executeAsOneOrNull()
             if (channel != null) {
                 val notUpdated = membersBlob != channel.membersBlob
                 completion(!notUpdated)
