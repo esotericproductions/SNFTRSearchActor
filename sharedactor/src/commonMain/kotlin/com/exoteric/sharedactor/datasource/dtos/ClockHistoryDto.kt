@@ -10,6 +10,7 @@ data class ClockHistoryDto (
     val username: String,
     val profilePic: String,
     val status: Long,
+    val blocked: Boolean,
     val thymestamp: Long
 )
 
