@@ -10,17 +10,18 @@ import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.interactors.chat.threads.createOriginatorBlob
 import com.exoteric.sharedactor.interactors.chat.threads.getCachedUserData
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
-import com.exoteric.sharedactor.interactors.flowers.IDAWNUsrChatMsgFlower
+import com.exoteric.sharedactor.interactors.flowers.UsrChatMsgFlower
 import com.exoteric.sharedactor.interactors.parseOriginatorBlob
+import com.exoteric.sharedactor.interactors.user.parseProfilesBlobBlocked
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.getId
 import kotlinx.coroutines.flow.flow
 
-class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWNUsrChatMsgFlower {
+class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : UsrChatMsgFlower {
     /**
      * Insert new incoming messages from the network.
      */
-    override fun executeIDUsrChatMsgsSearch(
+    override fun executeUsrChatMsgsSearch(
         iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
         userUid: String,
         channelUid: String): SnftrFlow<DataState<List<ClockIDUsrChatDto>>> = flow {
@@ -32,7 +33,7 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
                 userUid = userUid,
                 threadUid = channelUid
             ).executeAsList()
-            // 1. filter iDmsgs of any duplicates before putting into cache
+            // 1. filter msgs of any duplicates before putting into cache
             val filteredIDinChatMsgs =
                 iDmsgs?.distinct()?.filter { fp ->
                     fp.chatUid !in allCachedIDmsgs.map { it.chatUid }
@@ -63,7 +64,7 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
      * conversation, e.g. user scrolls to top of currently visible messages, the next batch
      * of older messages is loaded.  @see #fetchOlderCachedMessagesBatch for offline version.
      */
-    override fun executeIDUsrChatMsgsOnScroll(
+    override fun executeUsrChatMsgsOnScroll(
         iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
         userUid: String,
         lastTime: Long,
@@ -136,6 +137,9 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
         // map here since idawnChatMessage_Entity is generated
         val list: ArrayList<ClockIDUsrChatDto> = ArrayList()
         for (entity in cacheResult) {
+            // is msg posterUid blocked?
+            val user = snftrDatabase.snftrUsersQueries.searchUsersByUid(userUid).executeAsOneOrNull()
+            val blocked = if(user == null) false else parseProfilesBlobBlocked(user.profilesBlob)?.map { it.uid }?.contains(entity.posterUid) ?: false
             // update user if in db
             val blob = parseOriginatorBlob(entity.originatorBlob)
             val latestUserData =
@@ -176,7 +180,8 @@ class AddClockUserChatMessages(private val snftrDatabase: SnftrDatabase) : IDAWN
                         isFav = it.fav,
                         thumbsups = it.up,
                         thumbsdowns = it.down,
-                        flagged = it.flagged
+                        flagged = it.flagged,
+                        blocked = blocked
                     )
                 )
             }

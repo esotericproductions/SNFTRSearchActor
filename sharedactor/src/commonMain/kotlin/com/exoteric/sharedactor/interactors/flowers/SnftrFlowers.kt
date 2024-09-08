@@ -48,23 +48,23 @@ interface ClockThreadsFlower {
 }
 
 
-interface IDAWNUsrChatMsgFlower {
+interface UsrChatMsgFlower {
     @Throws(Exception::class)
-    fun executeIDUsrChatMsgsSearch(iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
+    fun executeUsrChatMsgsSearch(iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
                                    userUid: String,
                                    channelUid: String):
             SnftrFlow<DataState<List<ClockIDUsrChatDto>>>
     @Throws(Exception::class)
-    fun executeIDUsrChatMsgsOnScroll(iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
+    fun executeUsrChatMsgsOnScroll(iDmsgs: MutableList<SnftrIDUsrChatEntity>?,
                                      userUid: String,
                                      lastTime: Long,
                                      channelUid: String):
             SnftrFlow<DataState<List<ClockIDUsrChatDto>>>
 }
 
-interface IDAWNUsrChatMsgCacheFlower {
+interface UsrChatMsgCacheFlower {
     @Throws(Exception::class)
-    fun fetchCachedIDUsrChatMessages(userUid: String,
+    fun fetchCachedUsrChatMessages(userUid: String,
                                      channelUid: String):
             SnftrFlow<DataState<List<ClockIDUsrChatDto>>>
     @Throws(Exception::class)

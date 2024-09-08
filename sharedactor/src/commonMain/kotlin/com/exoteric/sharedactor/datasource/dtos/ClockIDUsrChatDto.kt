@@ -27,6 +27,7 @@ data class ClockIDUsrChatDto (
     val flagged: Long,
     // used for caching locally?
     val thumbsupsCount: Long,
-    val thumbsdownsCount: Long
+    val thumbsdownsCount: Long,
+    val blocked: Boolean
 )
 

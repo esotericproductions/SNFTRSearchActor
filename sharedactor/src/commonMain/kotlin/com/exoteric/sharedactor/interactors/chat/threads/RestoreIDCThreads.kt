@@ -10,6 +10,7 @@ import com.exoteric.sharedactor.domain.util.snftrFlow
 import com.exoteric.sharedactor.interactors.expressions.getUserExpressionsForSnftrDto
 import com.exoteric.sharedactor.interactors.flowers.ClockThreadsCacheFlower
 import com.exoteric.sharedactor.interactors.parseOriginatorBlob
+import com.exoteric.sharedactor.interactors.user.parseProfilesBlobBlocked
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import com.exoteric.snftrsearchlibr.ITEMS_PER_PG_PROVIDER_SEARCH
 import kotlinx.coroutines.flow.flow
@@ -120,6 +121,10 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
             .executeAsOneOrNull()
         var chat: ClockIDUsrChatDto? = null
         if(entity != null) {
+            // is msg posterUid blocked?
+            val user = snftrDatabase.snftrUsersQueries.searchUsersByUid(userUid).executeAsOneOrNull()
+            val blocked = if(user == null) false else parseProfilesBlobBlocked(user.profilesBlob)?.map { it.uid }?.contains(entity.posterUid) ?: false
+
             getUserExpressionsForSnftrDto(
                 uuid = entity.chatUid,
                 userUid = userUid,
@@ -164,7 +169,8 @@ class RestoreClockThreads(private val snftrDatabase: SnftrDatabase): ClockThread
                     isFav = it.fav,
                     thumbsups = it.up,
                     thumbsdowns = it.down,
-                    flagged = it.flagged
+                    flagged = it.flagged,
+                    blocked = blocked
                 )
             }
             return chat
