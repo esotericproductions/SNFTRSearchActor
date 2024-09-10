@@ -20,27 +20,26 @@ fun createProfilesBlob(following: ArrayList<ProfilesInnards>?, blocked: ArrayLis
 }
 
 fun parseProfilesBlobFollowing(jsonString: String?): ArrayList<ProfilesInnards>? {
-    return if (jsonString != null) {
+    return if (jsonString.isNullOrEmpty()) {
+        null
+    } else {
         val profilesBlob = Json.decodeFromString(serializer<ProfilesBlob>(), jsonString)
         profilesBlob.following
-    } else {
-        null
     }
 }
 
 fun parseProfilesBlobBlocked(jsonString: String?): ArrayList<ProfilesInnards>? {
-    return if (jsonString != null) {
+    return if (jsonString.isNullOrEmpty()) {
+        null
+    } else {
         val profilesBlob = Json.decodeFromString(serializer<ProfilesBlob>(), jsonString)
         profilesBlob.blocked
-    } else {
-        null
     }
 }
 
 fun getTimeForUID(jsonString: String?, uid: String): String {
-    if(jsonString.isNullOrEmpty()){ return "0" }
+    if(jsonString.isNullOrEmpty()) { return "0" }
     val profilesBlob = Json.decodeFromString(serializer<ProfilesBlob>(), jsonString)
-
     val followingItem = profilesBlob.following?.find { it.uid == uid }
     return followingItem?.time ?: "0"
 }
