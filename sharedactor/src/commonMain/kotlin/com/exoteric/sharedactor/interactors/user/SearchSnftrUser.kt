@@ -100,6 +100,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                 .selectAll()
                 .executeAsList()
 
+            // adds anything newx
             val filteredUsers =
                 users?.distinct()?.filter { fp ->
                     fp.uid !in allCachedUsers.map { it.uid } && fp.uid != currentUid
@@ -224,13 +225,26 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
     fun executeAllUserRestoredSearch(currentUid: String):
             SnftrFlow<DataState<List<ClockUserDto>>> =  flow {
         try {
-            val queries = snftrDatabase.snftrUsersQueries
+            val usersQueries = snftrDatabase.snftrUsersQueries
             emit(DataState.loading())
-            val allCachedUsers = queries
+
+            // TODO get the current user, then get the following list and return those if any,
+            // if no following, then return nothing
+            val currentUser = getCachedUser(currentUid)
+            val following: ArrayList<ProfilesInnards>?
+            = currentUser?.profilesBlob?.let { parseProfilesBlobFollowing(it) }
+
+
+
+            val allCachedUsers = usersQueries
                 .selectAll()
                 .executeAsList()
+
             val filteredUsers =
-                allCachedUsers.distinct().filter { fp -> fp.uid != currentUid }
+                allCachedUsers.distinct().filter { fp ->
+                    fp.uid != currentUid && following?.map { it.uid }?.contains(fp.uid) == true
+                }
+
             println("$TAG executeAllUserRestoredSearch(): existing: ${allCachedUsers.size} " +
                     "--- adding: ${filteredUsers.size}")
             val list = arrayListOf<ClockUserDto>()
@@ -247,11 +261,7 @@ class SearchSnftrUser(private val snftrDatabase: SnftrDatabase): SnftrUserFlower
                         favsTime = user.favsTime,
                         cAttsTime = user.cAttsTime,
                         profilesBlob = user.profilesBlob,
-                        // temperature is no longer used, it's all in UserDefaults for iOS
-                        // so using the available field in the UserDto for this one scenario...
-                        // ahem, so not great.  but using it for the ordering of the
-                        // following users.  The whole thing should be ported to firestore.
-                        // TODO: port to firestore.  For now all this to store as string in rtdb.
+                        // TODO: remove old temp/pressure/scores refs
                         temperature = user.temperature,
                         pressure = user.pressure,
                         scoresBlob = user.scoresBlob,
