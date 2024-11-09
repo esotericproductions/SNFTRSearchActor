@@ -294,17 +294,16 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : Us
             .searchIDAWNMessageByMessage(userUid = uid, threadUid = channelUid, message = latestPostQ)
             .executeAsOneOrNull()?.let { msg ->
                 val newestMsg = msg.message
-                println("$TAG checkNewestCachedLatestPostQ(uuid): $newestMsg")
+//                println("$TAG checkNewestCachedLatestPostQ(channelUid): $newestMsg")
                 val newestPostQ = if (newestMsg.length > 150) {
                     newestMsg.substring(0, 150)
                 } else {
                     newestMsg
                 }
-                println("$TAG checkNewestCachedLatestPostQ(uuid): lpq: $newestPostQ")
-
+                println("$TAG checkNewestCachedLatestPostQ(channelUid): ${newestPostQ != latestPostQ}")
                 return newestPostQ != latestPostQ
             } ?:
-        println("$TAG checkNewestCachedLatestPostQ(uuid): no msg row in db!")
+        println("$TAG checkNewestCachedLatestPostQ(channelUid): no msg row in db!")
         return true
     }
 
@@ -319,14 +318,13 @@ class RestoreClockUsrChatMessages(private val snftrDatabase: SnftrDatabase) : Us
             .getNewest(threadUid = channelUid, uid = uid)
             .executeAsOneOrNull()?.let { msg ->
                 val newestMsg = msg.message
-                println("$TAG checkNewestCachedLatestPostQA(uuid): $newestMsg")
+//                println("$TAG checkNewestCachedLatestPostQA(uuid): $newestMsg")
                 val newestPostQ = if (newestMsg.length > 150) {
                     newestMsg.substring(0, 150)
                 } else {
                     newestMsg
                 }
-                println("$TAG checkNewestCachedLatestPostQA(uuid): lpq: $newestPostQ")
-
+                println("$TAG checkNewestCachedLatestPostQA(uuid): ${newestPostQ != latestPostQ}")
                 return newestPostQ != latestPostQ
             } ?:
         println("$TAG checkNewestCachedLatestPostQA(uuid): no msg row in db!")
