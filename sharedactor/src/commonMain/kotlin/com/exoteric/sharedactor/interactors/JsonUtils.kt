@@ -29,12 +29,16 @@ fun parseThreadInfoBlob(jsonString: String): ClockThreadInfo {
     return ClockThreadInfo(threadUuid, type, alarmTimes)
 }
 
-fun generateThreadInfoJson(threadUuid: String, type: String, alarmTimes: List<Long>?): String {
+fun generateThreadInfoJson(
+    threadUuid: String,
+    type: String,
+    latestAggTime: Long,
+    alarmTimes: List<Long>?): String {
     val jsonObject = buildJsonObject {
         put("uuid", threadUuid)
         put("type", type)
-        if (alarmTimes != null) {
-            put("alarmTimes", JsonArray(alarmTimes.map { JsonPrimitive(it) }))
+        if (!alarmTimes.isNullOrEmpty()) {
+            put("alarmTimes", JsonArray(alarmTimes.filter{ it != latestAggTime}.map { JsonPrimitive(it) }))
         }
     }
     return Json.encodeToString(JsonElement.serializer(), jsonObject)
