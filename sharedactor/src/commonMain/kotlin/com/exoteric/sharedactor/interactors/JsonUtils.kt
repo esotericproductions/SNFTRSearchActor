@@ -1,5 +1,7 @@
 package com.exoteric.sharedactor.interactors
 
+import com.exoteric.sharedactor.interactors.thread.ClockThreadInfo
+import com.exoteric.sharedactor.interactors.thread.OriginatorBlob
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -12,9 +14,6 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 import kotlinx.serialization.json.put
 
-data class ClockThreadInfo(val uuid: String, val type: String, val alarmTimes: List<Long>?)
-
-data class OriginatorBlob(val username: String, val name: String, val uid: String)
 
 fun parseThreadInfoBlob(jsonString: String): ClockThreadInfo {
     val json = Json

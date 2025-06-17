@@ -26,7 +26,7 @@ class FetchClockEventHistory(private val snftrDatabase: SnftrDatabase) :
                 queries.getAllClockHistory(threadUuid = threadUuid).executeAsList()
             val filteredPurchases =
                 histories?.distinct()
-                    ?.filter { fp -> fp.thymestamp !in allCachedIP.map { it.thymestamp } }
+                    ?.filter { fp -> fp.uuid !in allCachedIP.map { it.uuid } }
             println("$TAG executeClockHistorySearch(): existing: ${allCachedIP.size} " +
                         "--- adding: ${filteredPurchases?.size}")
             if (filteredPurchases != null) {

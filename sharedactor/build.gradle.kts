@@ -15,6 +15,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_1_8)
         }
     }
+
     androidTarget {
         publishLibraryVariants("release")
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -91,7 +92,7 @@ val org.jetbrains.kotlin.konan.target.KonanTarget.archVariant: String
         "ios-arm64_armv7"
     }
 
-val v = "1.2.205"
+val v = "1.2.208"
 group = "com.exoteric"
 version = v
 

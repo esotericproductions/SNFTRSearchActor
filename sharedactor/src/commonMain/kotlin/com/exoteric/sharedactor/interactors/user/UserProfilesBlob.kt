@@ -1,5 +1,6 @@
 package com.exoteric.sharedactor.interactors.user
 
+import com.exoteric.sharedactor.interactors.thread.OriginatorBlob
 import com.exoteric.snftrdblib.cached.SnftrDatabase
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -54,7 +55,6 @@ fun getCachedUserProfilePic(uid: String, snftrDatabase: SnftrDatabase): String? 
     }
 }
 
-data class OriginatorBlob(val username: String, val name: String, val uid: String)
 
 fun parseOriginatorBlob(jsonString: String): OriginatorBlob {
     val json = Json
