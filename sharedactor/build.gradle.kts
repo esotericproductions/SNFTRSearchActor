@@ -77,8 +77,8 @@ kotlin {
 }
 
 android {
-    namespace = "com.exoteric"
-    compileSdk = 34
+    namespace = "com.exoteric.interactor"
+    compileSdk = 36
     defaultConfig {
         minSdk = 24
     }
@@ -92,8 +92,8 @@ val org.jetbrains.kotlin.konan.target.KonanTarget.archVariant: String
         "ios-arm64_armv7"
     }
 
-val v = "1.2.208"
-group = "com.exoteric"
+val v = "1.2.215"
+group = "com.exoteric.interactor"
 version = v
 
 publishing {

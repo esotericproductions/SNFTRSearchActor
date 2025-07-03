@@ -1,16 +1,16 @@
 [versions]
-agp = "8.2.2"
-kotlin = "2.0.0"
-snftr-searchLib = "1.2.32"
-snftr-dbLib = "1.2.27"
+agp = "8.11.0"
+kotlin = "2.2.0"
+snftr-searchLib = "1.2.35"
+snftr-dbLib = "1.2.30"
 coroutines= "1.7.3"
 ktor = "2.3.9"
 kotlinx-json = "1.5.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-snftr-searchLib = { module = "com.exoteric:snftrsearch", version.ref = "snftr-searchLib" }
-snftr-snftrDb = { module = "com.exoteric:snftrshared", version.ref = "snftr-dbLib" }
+snftr-searchLib = { module = "com.exoteric.snftrsearch:snftrsearch", version.ref = "snftr-searchLib" }
+snftr-snftrDb = { module = "com.exoteric.snftrdblib:snftrshared", version.ref = "snftr-dbLib" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-json" }
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
